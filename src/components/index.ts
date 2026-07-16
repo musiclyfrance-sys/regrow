@@ -7,3 +7,4 @@ export { EmotionScale } from './EmotionScale';
 export { FadeInWords } from './FadeInWords';
 export { BreathingCircle } from './BreathingCircle';
 export { Placeholder } from './Placeholder';
+export { ErrorBoundary } from './ErrorBoundary';

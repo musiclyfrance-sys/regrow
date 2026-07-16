@@ -1,37 +1,56 @@
+import { useEffect } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
+import Animated, { FadeInUp } from 'react-native-reanimated';
 import { AppText, BreathingCircle, ScreenContainer } from '@/components';
+import { haptics } from '@/lib/haptics';
 import { colors, radii, spacing } from '@/theme';
 import { selectExName, useQuizStore } from '@/state/quizStore';
+import {
+  selectStreakDays,
+  selectTodayCheckin,
+  useStreakStore,
+} from '@/state/streakStore';
 
 /**
- * Home — le rituel quotidien. Streak no-contact en grand, jauge Détox Score qui
- * respire, carte check-in, carte défi Glow-Up. Panic button flottant permanent.
- *
- * (Squelette du MVP : streak/score/défis seront branchés sur les données réelles
- * de rétention dans les lots suivants — voir l'ordre de build.)
+ * Home — le rituel quotidien. Streak en très grand, jauge Détox Score qui
+ * respire, check-in du jour, défi Glow-Up, panic button flottant en 1 tap.
+ * L'incrément du jour déclenche l'animation + l'haptique au premier lancement.
  */
 export default function HomeScreen() {
   const router = useRouter();
   const profile = useQuizStore((s) => s.profile);
   const ex = selectExName({ profile });
 
-  // Valeurs de démonstration en attendant le moteur de rétention.
-  const streakDays = 1;
-  const detoxScore = 12;
+  const startDate = useStreakStore((s) => s.startDate);
+  const lastContactDate = useStreakStore((s) => s.lastContactDate);
+  const detoxScore = useStreakStore((s) => s.detoxScore);
+  const checkins = useStreakStore((s) => s.checkins);
+  const ensureStarted = useStreakStore((s) => s.ensureStarted);
+  const registerOpen = useStreakStore((s) => s.registerOpen);
+
+  const streakDays = selectStreakDays({ startDate, lastContactDate });
+  const todayCheckin = selectTodayCheckin({ checkins });
+
+  useEffect(() => {
+    ensureStarted();
+    // Premier lancement du jour : haptique médium avec l'anim d'entrée.
+    if (registerOpen()) haptics.streak();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <ScreenContainer padded={false}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {/* Streak */}
-        <View style={styles.streakBlock}>
+        {/* Streak — compteur qui monte en entrée. */}
+        <Animated.View entering={FadeInUp.duration(500)} style={styles.streakBlock}>
           <AppText style={styles.streakNumber}>{streakDays}</AppText>
           <AppText variant="body" color={colors.textSecondary}>
             {streakDays > 1 ? 'jours' : 'jour'} sans contact
           </AppText>
-        </View>
+        </Animated.View>
 
-        {/* Jauge Détox Score (respiration lente) */}
+        {/* Jauge Détox Score (respiration lente permanente). */}
         <View style={styles.gaugeBlock}>
           <BreathingCircle size={160} color={colors.surfaceRaised}>
             <AppText style={styles.gaugeScore}>{detoxScore}</AppText>
@@ -41,15 +60,26 @@ export default function HomeScreen() {
           </BreathingCircle>
         </View>
 
-        {/* Check-in du jour */}
-        <Card onPress={() => router.push('/checkin')}>
-          <AppText variant="heading">Ton check-in du soir</AppText>
-          <AppText variant="body" color={colors.textSecondary}>
-            2 minutes. Ton insight du jour t'attend juste après.
-          </AppText>
+        {/* Check-in du jour : fait ou à faire. */}
+        <Card onPress={() => !todayCheckin && router.push('/checkin')} done={!!todayCheckin}>
+          {todayCheckin ? (
+            <>
+              <AppText variant="caption" color={colors.success}>
+                CHECK-IN FAIT ✓
+              </AppText>
+              <AppText variant="heading">À demain soir. Tiens bon.</AppText>
+            </>
+          ) : (
+            <>
+              <AppText variant="heading">Ton check-in du soir</AppText>
+              <AppText variant="body" color={colors.textSecondary}>
+                2 minutes. Ton insight du jour t'attend juste après.
+              </AppText>
+            </>
+          )}
         </Card>
 
-        {/* Défi Glow-Up */}
+        {/* Défi Glow-Up du jour. */}
         <Card onPress={() => router.push('/(tabs)/journey')}>
           <AppText variant="caption" color={colors.accentWarm}>
             DÉFI DU JOUR
@@ -76,9 +106,17 @@ export default function HomeScreen() {
   );
 }
 
-function Card({ children, onPress }: { children: React.ReactNode; onPress: () => void }) {
+function Card({
+  children,
+  onPress,
+  done,
+}: {
+  children: React.ReactNode;
+  onPress: () => void;
+  done?: boolean;
+}) {
   return (
-    <Pressable style={styles.card} onPress={onPress}>
+    <Pressable style={[styles.card, done && styles.cardDone]} onPress={onPress}>
       {children}
     </Pressable>
   );
@@ -105,6 +143,7 @@ const styles = StyleSheet.create({
     padding: spacing.xl,
     gap: spacing.sm,
   },
+  cardDone: { opacity: 0.75 },
   hint: { marginTop: spacing.md },
   panic: {
     position: 'absolute',
