@@ -8,6 +8,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { colors, useAppFonts } from '@/theme';
 import { ErrorBoundary } from '@/components';
 import { initAnalytics, track } from '@/lib/analytics';
+import { listenNotificationOpens } from '@/lib/notifications';
 import { ensureAnonymousSession } from '@/lib/supabase';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -20,6 +21,10 @@ export default function RootLayout() {
     initAnalytics();
     ensureAnonymousSession();
     track('app_opened');
+    // Suivi des ouvertures de notification (famille uniquement, jamais le contenu).
+    return listenNotificationOpens((family) =>
+      track('notification_opened', { family }),
+    );
   }, []);
 
   useEffect(() => {

@@ -35,6 +35,10 @@ interface StreakState {
   detoxScore: number;
   checkins: Checkin[];
   challengesDone: number;
+  /** Dates (AAAA-MM-JJ) où le défi du jour a été complété. */
+  challengeDoneDates: string[];
+  /** Dernier milestone déjà célébré (évite les doublons d'événement). */
+  lastMilestoneCelebrated: number;
   /** Angle du dernier insight (pour ne jamais répéter deux jours de suite). */
   lastInsightAngle: string | null;
 
@@ -43,6 +47,7 @@ interface StreakState {
   registerOpen: () => boolean;
   addCheckin: (c: Omit<Checkin, 'date'>) => void;
   completeChallenge: () => void;
+  celebrateMilestone: (day: number) => void;
   setLastInsightAngle: (angle: string) => void;
 }
 
@@ -68,6 +73,8 @@ export const useStreakStore = create<StreakState>()(
       detoxScore: 10, // petit socle de départ : elle a déjà fait l'autopsie
       checkins: [],
       challengesDone: 0,
+      challengeDoneDates: [],
+      lastMilestoneCelebrated: 0,
       lastInsightAngle: null,
 
       ensureStarted: () => {
@@ -104,11 +111,17 @@ export const useStreakStore = create<StreakState>()(
         });
       },
 
-      completeChallenge: () =>
+      completeChallenge: () => {
+        const today = todayISO();
+        if (get().challengeDoneDates.includes(today)) return; // un seul par jour
         set({
           challengesDone: get().challengesDone + 1,
+          challengeDoneDates: [...get().challengeDoneDates, today].slice(-100),
           detoxScore: Math.min(100, get().detoxScore + 3),
-        }),
+        });
+      },
+
+      celebrateMilestone: (day) => set({ lastMilestoneCelebrated: day }),
 
       setLastInsightAngle: (angle) => set({ lastInsightAngle: angle }),
     }),
@@ -132,4 +145,17 @@ export function selectStreakDays(s: {
 /** Le check-in du jour est-il fait ? */
 export function selectTodayCheckin(s: { checkins: Checkin[] }): Checkin | null {
   return s.checkins.find((c) => c.date === todayISO()) ?? null;
+}
+
+/** Jour de programme (1 → 90), basé sur la date de début. */
+export function selectProgramDay(startDate: string | null): number {
+  if (!startDate) return 1;
+  const start = new Date(`${startDate}T00:00:00`);
+  const days = Math.floor((Date.now() - start.getTime()) / 86_400_000) + 1;
+  return Math.max(1, Math.min(90, days));
+}
+
+/** Le défi du jour est-il fait ? */
+export function selectTodayChallengeDone(challengeDoneDates: string[]): boolean {
+  return challengeDoneDates.includes(todayISO());
 }

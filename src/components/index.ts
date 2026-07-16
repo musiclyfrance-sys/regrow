@@ -11,3 +11,5 @@ export { ErrorBoundary } from './ErrorBoundary';
 export { CountUpText } from './CountUpText';
 export { ScoreRing } from './ScoreRing';
 export { HealingCurve } from './HealingCurve';
+export { ShareCard } from './ShareCard';
+export { ShareCardSheet } from './ShareCardSheet';

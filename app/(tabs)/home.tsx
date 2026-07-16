@@ -1,13 +1,25 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import Animated, { FadeInUp } from 'react-native-reanimated';
-import { AppText, CountUpText, ScoreRing, ScreenContainer } from '@/components';
-import { haptics } from '@/lib/haptics';
-import { colors, fonts, radii, spacing } from '@/theme';
-import { selectExName, useQuizStore } from '@/state/quizStore';
 import {
+  AppText,
+  CountUpText,
+  ScoreRing,
+  ScreenContainer,
+  ShareCardSheet,
+} from '@/components';
+import { challengeOfDay, MILESTONE_DAYS } from '@/config/challenges';
+import { track } from '@/lib/analytics';
+import { haptics } from '@/lib/haptics';
+import { armNotifications } from '@/lib/notifications';
+import { colors, fonts, radii, spacing } from '@/theme';
+import { useCapsuleStore } from '@/state/capsuleStore';
+import { resolveText, selectExName, useQuizStore } from '@/state/quizStore';
+import {
+  selectProgramDay,
   selectStreakDays,
+  selectTodayChallengeDone,
   selectTodayCheckin,
   useStreakStore,
 } from '@/state/streakStore';
@@ -26,16 +38,41 @@ export default function HomeScreen() {
   const lastContactDate = useStreakStore((s) => s.lastContactDate);
   const detoxScore = useStreakStore((s) => s.detoxScore);
   const checkins = useStreakStore((s) => s.checkins);
+  const challengeDoneDates = useStreakStore((s) => s.challengeDoneDates);
+  const lastMilestoneCelebrated = useStreakStore((s) => s.lastMilestoneCelebrated);
+  const celebrateMilestone = useStreakStore((s) => s.celebrateMilestone);
   const ensureStarted = useStreakStore((s) => s.ensureStarted);
   const registerOpen = useStreakStore((s) => s.registerOpen);
+  const capsules = useCapsuleStore((s) => s.capsules);
 
   const streakDays = selectStreakDays({ startDate, lastContactDate });
   const todayCheckin = selectTodayCheckin({ checkins });
+  const programDay = selectProgramDay(startDate);
+  const challengeDone = selectTodayChallengeDone(challengeDoneDates);
+  const { challenge } = challengeOfDay(programDay);
+
+  // Milestone atteint aujourd'hui → carte à partager proposée.
+  const reachedMilestone = MILESTONE_DAYS.includes(streakDays)
+    ? streakDays
+    : null;
+  const [sharingMilestone, setSharingMilestone] = useState<number | null>(null);
 
   useEffect(() => {
     ensureStarted();
     // Premier lancement du jour : haptique médium avec l'anim d'entrée.
     if (registerOpen()) haptics.streak();
+    // Milestone jamais célébré → événement (une seule fois par palier).
+    if (reachedMilestone && reachedMilestone > lastMilestoneCelebrated) {
+      celebrateMilestone(reachedMilestone);
+      track('streak_milestone', { day: reachedMilestone });
+    }
+    // (Re)programme les notifications : rendez-vous du soir, milestones, capsules.
+    armNotifications({
+      weakHour: String(profile.weakHour ?? '23'),
+      exName: ex,
+      startDate,
+      capsuleUnlocks: capsules.map((c) => c.unlockAt),
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -79,12 +116,27 @@ export default function HomeScreen() {
           )}
         </Card>
 
-        {/* Défi Glow-Up du jour. */}
-        <Card onPress={() => router.push('/(tabs)/journey')}>
+        {/* Milestone du jour : la carte à partager. */}
+        {reachedMilestone != null && (
+          <Card onPress={() => setSharingMilestone(reachedMilestone)}>
+            <AppText variant="caption" color={colors.accentWarm}>
+              MILESTONE · J{reachedMilestone}
+            </AppText>
+            <AppText variant="heading">
+              {reachedMilestone} jours sans lui écrire. Ta carte est prête.
+            </AppText>
+            <AppText variant="body" color={colors.textSecondary}>
+              Montre-la, ou garde-la pour toi. Touche pour la voir.
+            </AppText>
+          </Card>
+        )}
+
+        {/* Défi Glow-Up du jour (vient de la banque, selon le jour de programme). */}
+        <Card onPress={() => router.push('/(tabs)/journey')} done={challengeDone}>
           <AppText variant="caption" color={colors.accentWarm}>
-            DÉFI DU JOUR
+            {challengeDone ? 'DÉFI DU JOUR · FAIT ✓' : 'DÉFI DU JOUR'}
           </AppText>
-          <AppText variant="heading">Sors 20 minutes, sans ton téléphone.</AppText>
+          <AppText variant="heading">{resolveText(challenge.text, ex)}</AppText>
         </Card>
 
         <AppText variant="caption" color={colors.textSecondary} center style={styles.hint}>
@@ -102,6 +154,14 @@ export default function HomeScreen() {
           Besoin d'aide, là
         </AppText>
       </Pressable>
+
+      {sharingMilestone != null && (
+        <ShareCardSheet
+          variant={sharingMilestone >= 90 ? 'healing' : 'milestone'}
+          value={sharingMilestone}
+          onDone={() => setSharingMilestone(null)}
+        />
+      )}
     </ScreenContainer>
   );
 }

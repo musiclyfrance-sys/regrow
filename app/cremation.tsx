@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Dimensions, Share, StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, {
@@ -11,7 +11,7 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
-import { AppText, PrimaryButton, ScreenContainer } from '@/components';
+import { AppText, PrimaryButton, ScreenContainer, ShareCardSheet } from '@/components';
 import { track } from '@/lib/analytics';
 import { haptics } from '@/lib/haptics';
 import { useReduceMotion } from '@/hooks/useReduceMotion';
@@ -34,6 +34,7 @@ export default function CremationScreen() {
 
   const [phase, setPhase] = useState<'burning' | 'silence' | 'certificate'>('burning');
   const [count] = useState(itemCount);
+  const [sharing, setSharing] = useState(false);
 
   const darken = useSharedValue(0);
 
@@ -66,12 +67,6 @@ export default function CremationScreen() {
 
   const veilStyle = useAnimatedStyle(() => ({ opacity: darken.value * 0.9 }));
 
-  const shareCertificate = async () => {
-    await Share.share({
-      message: `Certificat de crémation — ${count} souvenirs rendus au passé. 90 jours de reconstruction. 🔥 Regrow`,
-    });
-  };
-
   if (phase === 'certificate') {
     const today = new Date().toLocaleDateString('fr-FR', {
       day: 'numeric',
@@ -98,9 +93,16 @@ export default function CremationScreen() {
           </View>
         </Animated.View>
         <View style={styles.bottomBar}>
-          <PrimaryButton label="Partager" variant="ghost" onPress={shareCertificate} />
+          <PrimaryButton label="Partager" variant="ghost" onPress={() => setSharing(true)} />
           <PrimaryButton label="Continuer ma vie" onPress={() => router.replace('/(tabs)/home')} />
         </View>
+        {sharing && (
+          <ShareCardSheet
+            variant="cremation"
+            value={count}
+            onDone={() => setSharing(false)}
+          />
+        )}
       </ScreenContainer>
     );
   }
