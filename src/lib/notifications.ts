@@ -1,4 +1,5 @@
 import * as Notifications from 'expo-notifications';
+import { SchedulableTriggerInputTypes } from 'expo-notifications';
 import {
   CAPSULE_MESSAGE,
   DAILY_MESSAGES,
@@ -82,7 +83,7 @@ export async function armNotifications(input: ArmInput): Promise<void> {
             body: m.body,
             data: { family: 'milestone' satisfies NotificationFamily, day: m.day },
           },
-          trigger: when,
+          trigger: { type: SchedulableTriggerInputTypes.DATE, date: when },
         });
       }
     }
@@ -102,7 +103,7 @@ export async function armNotifications(input: ArmInput): Promise<void> {
             .replaceAll('{hour}', `${hour}h`),
           data: { family: 'daily' satisfies NotificationFamily },
         },
-        trigger: when,
+        trigger: { type: SchedulableTriggerInputTypes.DATE, date: when },
       });
     }
 
@@ -116,7 +117,7 @@ export async function armNotifications(input: ArmInput): Promise<void> {
           body: CAPSULE_MESSAGE.body,
           data: { family: 'capsule' satisfies NotificationFamily },
         },
-        trigger: when,
+        trigger: { type: SchedulableTriggerInputTypes.DATE, date: when },
       });
     }
   } catch {

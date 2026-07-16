@@ -70,7 +70,11 @@ export function track(event: AnalyticsEvent, props?: Props) {
     if (__DEV__) console.log(`[analytics:mock] ${event}`, props ?? {});
     return;
   }
-  client.capture(event, props);
+  // On retire les valeurs undefined (PostHog n'accepte que du JSON propre).
+  const clean = Object.fromEntries(
+    Object.entries(props ?? {}).filter(([, v]) => v !== undefined),
+  ) as Record<string, string | number | boolean>;
+  client.capture(event, clean);
 }
 
 /** Associe la session anonyme à un identifiant stable APRÈS le paiement/compte. */
