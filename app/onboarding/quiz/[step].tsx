@@ -8,7 +8,8 @@ import {
   View,
 } from 'react-native';
 import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
+import { useReduceMotion } from '@/hooks/useReduceMotion';
 import {
   AppText,
   EmotionScale,
@@ -166,20 +167,40 @@ function QuestionBody({
   onSet: (v: AnswerValue) => void;
   exName: string;
 }) {
+  const reduceMotion = useReduceMotion();
+  // Les pilules arrivent en cascade (45 ms d'écart) : l'écran se construit
+  // sous ses yeux au lieu d'apparaître d'un bloc.
+  const Cascade = ({ index, children }: { index: number; children: React.ReactNode }) =>
+    reduceMotion ? (
+      <View>{children}</View>
+    ) : (
+      <Animated.View entering={FadeInDown.delay(80 + index * 45).duration(260)}>
+        {children}
+      </Animated.View>
+    );
+
   switch (q.type) {
-    case 'single':
+    case 'single': {
+      const options = [
+        ...(q.options ?? []),
+        ...(q.allowOther
+          ? [{ value: '__other', label: 'Autre / aucune de ces réponses' }]
+          : []),
+      ];
       return (
         <View style={styles.options}>
-          {q.options?.map((o) => (
-            <PillOption
-              key={o.value}
-              label={resolveText(o.label, exName)}
-              selected={value === o.value}
-              onPress={() => onSingle(o.value)}
-            />
+          {options.map((o, i) => (
+            <Cascade key={o.value} index={i}>
+              <PillOption
+                label={resolveText(o.label, exName)}
+                selected={value === o.value}
+                onPress={() => onSingle(o.value)}
+              />
+            </Cascade>
           ))}
         </View>
       );
+    }
 
     case 'multiple': {
       const selected = Array.isArray(value) ? value : [];
@@ -189,14 +210,15 @@ function QuestionBody({
         );
       return (
         <View style={styles.options}>
-          {q.options?.map((o) => (
-            <PillOption
-              key={o.value}
-              multiple
-              label={resolveText(o.label, exName)}
-              selected={selected.includes(o.value)}
-              onPress={() => toggle(o.value)}
-            />
+          {q.options?.map((o, i) => (
+            <Cascade key={o.value} index={i}>
+              <PillOption
+                multiple
+                label={resolveText(o.label, exName)}
+                selected={selected.includes(o.value)}
+                onPress={() => toggle(o.value)}
+              />
+            </Cascade>
           ))}
         </View>
       );

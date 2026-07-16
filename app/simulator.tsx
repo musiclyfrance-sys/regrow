@@ -151,20 +151,26 @@ export default function SimulatorScreen() {
     return (
       <ScreenContainer center>
         <View style={styles.centerContent}>
+          <AppText variant="caption" color={colors.accentWarm} center style={styles.gateLabel}>
+            LE CRASH TEST
+          </AppText>
           <AppText variant="title" center>
-            Tu vas parler à une simulation de {ex}.
+            Écris-lui ici. Pas là-bas.
           </AppText>
           <AppText variant="bodyLarge" color={colors.textSecondary} center>
-            Construite d'après ce que tu m'as dit de lui. Ce n'est pas lui.
-            L'objectif est de te montrer comment cette conversation finirait
-            vraiment.
+            Le message que tu brûles d'envoyer à {ex}, envoie-le ici d'abord.
+            D'après tout ce que tu m'as raconté — sa façon de fuir, ses réponses
+            floues — je te montre comment la conversation finirait vraiment.
           </AppText>
-          <AppText variant="caption" color={colors.accentWarm} center>
-            Il te reste {remaining} simulation{remaining > 1 ? 's' : ''} cette semaine
+          <AppText variant="body" color={colors.textPrimary} center>
+            Tu gardes ta streak. Tu perds juste l'illusion.
+          </AppText>
+          <AppText variant="caption" color={colors.textSecondary} center>
+            Il te reste {remaining} crash test{remaining > 1 ? 's' : ''} cette semaine
           </AppText>
         </View>
         <View style={styles.bottomBar}>
-          <PrimaryButton label="J'ai compris" onPress={startChat} />
+          <PrimaryButton label="Tester mon message" onPress={startChat} />
           <PrimaryButton label="Finalement non" variant="ghost" onPress={() => router.back()} />
         </View>
       </ScreenContainer>
@@ -222,7 +228,7 @@ export default function SimulatorScreen() {
         <Pressable onPress={() => setPhase('debrief')} hitSlop={12}>
           <AppText variant="body" color={colors.textSecondary}>✕</AppText>
         </Pressable>
-        <AppText variant="bodyMedium">{ex} (simulation)</AppText>
+        <AppText variant="bodyMedium">{ex} · prédiction</AppText>
         <AppText variant="caption" color={colors.textSecondary}>
           {exchangesLeft}
         </AppText>
@@ -286,6 +292,7 @@ export default function SimulatorScreen() {
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   centerContent: { gap: spacing.lg, paddingHorizontal: spacing.sm, width: '100%' },
+  gateLabel: { letterSpacing: 2 },
   bottomBar: {
     position: 'absolute',
     bottom: spacing.xl,

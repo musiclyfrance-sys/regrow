@@ -1,6 +1,13 @@
+import { useEffect } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
 import { AppText } from './AppText';
 import { haptics } from '@/lib/haptics';
+import { useReduceMotion } from '@/hooks/useReduceMotion';
 import { colors, radii, spacing } from '@/theme';
 
 interface Props {
@@ -11,8 +18,8 @@ interface Props {
 }
 
 /**
- * Slider émotionnel discret (1 → max). Chaque cran donne un haptique léger.
- * Simple, tactile, lisible d'un pouce dans le noir.
+ * Slider émotionnel (1 → max). Chaque cran donne un haptique léger, et les
+ * points s'allument en rebondissant doucement — la sélection se SENT.
  */
 export function EmotionScale({ value, onChange, max = 5, labels }: Props) {
   const steps = Array.from({ length: max }, (_, i) => i + 1);
@@ -20,31 +27,21 @@ export function EmotionScale({ value, onChange, max = 5, labels }: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.row}>
-        {steps.map((n) => {
-          const active = value != null && n <= value;
-          const isCurrent = value === n;
-          return (
-            <Pressable
-              key={n}
-              accessibilityRole="adjustable"
-              accessibilityLabel={`${n} sur ${max}`}
-              accessibilityState={{ selected: isCurrent }}
-              onPress={() => {
-                haptics.selection();
-                onChange(n);
-              }}
-              style={styles.hit}
-            >
-              <View
-                style={[
-                  styles.dot,
-                  active && styles.dotActive,
-                  isCurrent && styles.dotCurrent,
-                ]}
-              />
-            </Pressable>
-          );
-        })}
+        {steps.map((n) => (
+          <Pressable
+            key={n}
+            accessibilityRole="adjustable"
+            accessibilityLabel={`${n} sur ${max}`}
+            accessibilityState={{ selected: value === n }}
+            onPress={() => {
+              haptics.selection();
+              onChange(n);
+            }}
+            style={styles.hit}
+          >
+            <Dot active={value != null && n <= value} current={value === n} />
+          </Pressable>
+        ))}
       </View>
       {labels && (
         <View style={styles.labels}>
@@ -57,6 +54,36 @@ export function EmotionScale({ value, onChange, max = 5, labels }: Props) {
         </View>
       )}
     </View>
+  );
+}
+
+function Dot({ active, current }: { active: boolean; current: boolean }) {
+  const reduce = useReduceMotion();
+  const scale = useSharedValue(1);
+
+  useEffect(() => {
+    if (reduce) {
+      scale.value = current ? 1.25 : 1;
+      return;
+    }
+    // Rebond doux à l'allumage — jamais de bounce agressif.
+    scale.value = withSpring(current ? 1.3 : active ? 1.08 : 1, {
+      damping: 12,
+      stiffness: 180,
+    });
+  }, [active, current, reduce, scale]);
+
+  const style = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
+
+  return (
+    <Animated.View
+      style={[
+        styles.dot,
+        active && styles.dotActive,
+        current && styles.dotCurrent,
+        style,
+      ]}
+    />
   );
 }
 
@@ -77,9 +104,6 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   dotActive: { backgroundColor: colors.primarySoft },
-  dotCurrent: {
-    borderColor: colors.textPrimary,
-    transform: [{ scale: 1.25 }],
-  },
+  dotCurrent: { borderColor: colors.textPrimary },
   labels: { flexDirection: 'row', justifyContent: 'space-between' },
 });

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import Animated, { FadeInUp } from 'react-native-reanimated';
-import { AppText, BreathingCircle, ScreenContainer } from '@/components';
+import { AppText, CountUpText, ScoreRing, ScreenContainer } from '@/components';
 import { haptics } from '@/lib/haptics';
 import { colors, fonts, radii, spacing } from '@/theme';
 import { selectExName, useQuizStore } from '@/state/quizStore';
@@ -42,22 +42,22 @@ export default function HomeScreen() {
   return (
     <ScreenContainer padded={false}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {/* Streak — compteur qui monte en entrée. */}
+        {/* Streak — le chiffre ROULE de 0 jusqu'au total : elle voit sa victoire grimper. */}
         <Animated.View entering={FadeInUp.duration(500)} style={styles.streakBlock}>
-          <AppText style={styles.streakNumber}>{streakDays}</AppText>
+          <CountUpText value={streakDays} style={styles.streakNumber} />
           <AppText variant="body" color={colors.textSecondary}>
             {streakDays > 1 ? 'jours' : 'jour'} sans contact
           </AppText>
         </Animated.View>
 
-        {/* Jauge Détox Score (respiration lente permanente). */}
+        {/* Détox Score : l'anneau pêche se remplit jusqu'au score, la jauge respire. */}
         <View style={styles.gaugeBlock}>
-          <BreathingCircle size={160} color={colors.surfaceRaised}>
-            <AppText style={styles.gaugeScore}>{detoxScore}</AppText>
+          <ScoreRing score={detoxScore}>
+            <CountUpText value={detoxScore} durationMs={1100} style={styles.gaugeScore} />
             <AppText variant="caption" color={colors.textSecondary}>
               Détox Score
             </AppText>
-          </BreathingCircle>
+          </ScoreRing>
         </View>
 
         {/* Check-in du jour : fait ou à faire. */}
@@ -130,12 +130,15 @@ const styles = StyleSheet.create({
     fontSize: 64,
     lineHeight: 70,
     color: colors.accentWarm,
+    textAlign: 'center',
   },
   gaugeBlock: { alignItems: 'center' },
   gaugeScore: {
     fontFamily: fonts.serifSemibold,
     fontSize: 40,
+    lineHeight: 46,
     color: colors.textPrimary,
+    textAlign: 'center',
   },
   card: {
     backgroundColor: colors.surface,

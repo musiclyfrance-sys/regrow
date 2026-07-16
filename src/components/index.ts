@@ -8,3 +8,6 @@ export { FadeInWords } from './FadeInWords';
 export { BreathingCircle } from './BreathingCircle';
 export { Placeholder } from './Placeholder';
 export { ErrorBoundary } from './ErrorBoundary';
+export { CountUpText } from './CountUpText';
+export { ScoreRing } from './ScoreRing';
+export { HealingCurve } from './HealingCurve';
