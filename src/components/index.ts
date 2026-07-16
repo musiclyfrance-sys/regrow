@@ -13,3 +13,5 @@ export { ScoreRing } from './ScoreRing';
 export { HealingCurve } from './HealingCurve';
 export { ShareCard } from './ShareCard';
 export { ShareCardSheet } from './ShareCardSheet';
+export { ActionCard } from './ActionCard';
+export { TabIcon } from './TabIcon';

@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import Animated, { FadeInUp } from 'react-native-reanimated';
+import Svg, { Circle, Path } from 'react-native-svg';
 import {
+  ActionCard,
   AppText,
   CountUpText,
   ScoreRing,
@@ -14,6 +16,7 @@ import { track } from '@/lib/analytics';
 import { haptics } from '@/lib/haptics';
 import { armNotifications } from '@/lib/notifications';
 import { colors, fonts, radii, spacing } from '@/theme';
+import { useAppStore } from '@/state/appStore';
 import { useCapsuleStore } from '@/state/capsuleStore';
 import { resolveText, selectExName, useQuizStore } from '@/state/quizStore';
 import {
@@ -24,15 +27,25 @@ import {
   useStreakStore,
 } from '@/state/streakStore';
 
+/** Salutation selon l'heure — l'app vit surtout la nuit. */
+function greeting(): string {
+  const h = new Date().getHours();
+  if (h >= 5 && h < 12) return 'Bonjour';
+  if (h >= 12 && h < 18) return 'Bel après-midi';
+  if (h >= 18 && h < 22) return 'Bonsoir';
+  return 'Toujours debout';
+}
+
 /**
- * Home — le rituel quotidien. Streak en très grand, jauge Détox Score qui
- * respire, check-in du jour, défi Glow-Up, panic button flottant en 1 tap.
- * L'incrément du jour déclenche l'animation + l'haptique au premier lancement.
+ * Home — le rituel quotidien. Salutation personnalisée, streak qui roule,
+ * anneau Détox Score, les 2 actions du jour (check-in, défi) en cartes
+ * clairement cliquables, panic button flottant.
  */
 export default function HomeScreen() {
   const router = useRouter();
   const profile = useQuizStore((s) => s.profile);
   const ex = selectExName({ profile });
+  const userName = useAppStore((s) => s.userName);
 
   const startDate = useStreakStore((s) => s.startDate);
   const lastContactDate = useStreakStore((s) => s.lastContactDate);
@@ -51,22 +64,16 @@ export default function HomeScreen() {
   const challengeDone = selectTodayChallengeDone(challengeDoneDates);
   const { challenge } = challengeOfDay(programDay);
 
-  // Milestone atteint aujourd'hui → carte à partager proposée.
-  const reachedMilestone = MILESTONE_DAYS.includes(streakDays)
-    ? streakDays
-    : null;
+  const reachedMilestone = MILESTONE_DAYS.includes(streakDays) ? streakDays : null;
   const [sharingMilestone, setSharingMilestone] = useState<number | null>(null);
 
   useEffect(() => {
     ensureStarted();
-    // Premier lancement du jour : haptique médium avec l'anim d'entrée.
     if (registerOpen()) haptics.streak();
-    // Milestone jamais célébré → événement (une seule fois par palier).
     if (reachedMilestone && reachedMilestone > lastMilestoneCelebrated) {
       celebrateMilestone(reachedMilestone);
       track('streak_milestone', { day: reachedMilestone });
     }
-    // (Re)programme les notifications : rendez-vous du soir, milestones, capsules.
     armNotifications({
       weakHour: String(profile.weakHour ?? '23'),
       exName: ex,
@@ -79,7 +86,36 @@ export default function HomeScreen() {
   return (
     <ScreenContainer padded={false}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {/* Streak — le chiffre ROULE de 0 jusqu'au total : elle voit sa victoire grimper. */}
+        {/* Salutation personnalisée + réglages. */}
+        <View style={styles.topBar}>
+          <View>
+            <AppText variant="title">
+              {greeting()}
+              {userName ? `, ${userName}` : ''}.
+            </AppText>
+            <AppText variant="body" color={colors.textSecondary}>
+              Jour {programDay} de ton programme.
+            </AppText>
+          </View>
+          <Pressable
+            onPress={() => router.push('/settings')}
+            hitSlop={10}
+            accessibilityLabel="Réglages"
+            style={styles.gear}
+          >
+            <Svg width={22} height={22} viewBox="0 0 24 24">
+              <Circle cx={12} cy={12} r={3.2} stroke={colors.textSecondary} strokeWidth={1.8} fill="none" />
+              <Path
+                d="M12 2.8v2.4M12 18.8v2.4M4.2 12H1.8M22.2 12h-2.4M5.4 5.4l1.7 1.7M16.9 16.9l1.7 1.7M18.6 5.4l-1.7 1.7M7.1 16.9l-1.7 1.7"
+                stroke={colors.textSecondary}
+                strokeWidth={1.8}
+                strokeLinecap="round"
+              />
+            </Svg>
+          </Pressable>
+        </View>
+
+        {/* Streak — le chiffre roule jusqu'au total. */}
         <Animated.View entering={FadeInUp.duration(500)} style={styles.streakBlock}>
           <CountUpText value={streakDays} style={styles.streakNumber} />
           <AppText variant="body" color={colors.textSecondary}>
@@ -87,7 +123,7 @@ export default function HomeScreen() {
           </AppText>
         </Animated.View>
 
-        {/* Détox Score : l'anneau pêche se remplit jusqu'au score, la jauge respire. */}
+        {/* Détox Score : anneau pêche + jauge qui respire. */}
         <View style={styles.gaugeBlock}>
           <ScoreRing score={detoxScore}>
             <CountUpText value={detoxScore} durationMs={1100} style={styles.gaugeScore} />
@@ -97,47 +133,38 @@ export default function HomeScreen() {
           </ScoreRing>
         </View>
 
-        {/* Check-in du jour : fait ou à faire. */}
-        <Card onPress={() => !todayCheckin && router.push('/checkin')} done={!!todayCheckin}>
-          {todayCheckin ? (
-            <>
-              <AppText variant="caption" color={colors.success}>
-                CHECK-IN FAIT ✓
-              </AppText>
-              <AppText variant="heading">À demain soir. Tiens bon.</AppText>
-            </>
-          ) : (
-            <>
-              <AppText variant="heading">Ton check-in du soir</AppText>
-              <AppText variant="body" color={colors.textSecondary}>
-                2 minutes. Ton insight du jour t'attend juste après.
-              </AppText>
-            </>
-          )}
-        </Card>
-
         {/* Milestone du jour : la carte à partager. */}
         {reachedMilestone != null && (
-          <Card onPress={() => setSharingMilestone(reachedMilestone)}>
-            <AppText variant="caption" color={colors.accentWarm}>
-              MILESTONE · J{reachedMilestone}
-            </AppText>
-            <AppText variant="heading">
-              {reachedMilestone} jours sans lui écrire. Ta carte est prête.
-            </AppText>
-            <AppText variant="body" color={colors.textSecondary}>
-              Montre-la, ou garde-la pour toi. Touche pour la voir.
-            </AppText>
-          </Card>
+          <ActionCard
+            eyebrow={`MILESTONE · J${reachedMilestone}`}
+            title={`${reachedMilestone} jours sans lui écrire.`}
+            cta="Voir ma carte"
+            accentColor={colors.accentWarm}
+            onPress={() => setSharingMilestone(reachedMilestone)}
+          />
         )}
 
-        {/* Défi Glow-Up du jour (vient de la banque, selon le jour de programme). */}
-        <Card onPress={() => router.push('/(tabs)/journey')} done={challengeDone}>
-          <AppText variant="caption" color={colors.accentWarm}>
-            {challengeDone ? 'DÉFI DU JOUR · FAIT ✓' : 'DÉFI DU JOUR'}
-          </AppText>
-          <AppText variant="heading">{resolveText(challenge.text, ex)}</AppText>
-        </Card>
+        {/* Les 2 actions du jour — clairement cliquables. */}
+        <ActionCard
+          eyebrow="CHECK-IN DU SOIR"
+          eyebrowColor={colors.primarySoft}
+          title="Comment tu vas, vraiment ?"
+          cta="Commencer · 2 min"
+          done={!!todayCheckin}
+          doneLabel="Fait ✓ · à demain soir"
+          accentColor={colors.primary}
+          onPress={() => router.push('/checkin')}
+        />
+
+        <ActionCard
+          eyebrow="DÉFI DU JOUR"
+          title={resolveText(challenge.text, ex)}
+          cta="Relever le défi"
+          done={challengeDone}
+          doneLabel="Fait ✓ · +3 au Détox Score"
+          accentColor={colors.accentWarm}
+          onPress={() => router.push('/(tabs)/journey')}
+        />
 
         <AppText variant="caption" color={colors.textSecondary} center style={styles.hint}>
           Tu penses à {ex} ? Le bouton en bas est là pour ça.
@@ -166,25 +193,20 @@ export default function HomeScreen() {
   );
 }
 
-function Card({
-  children,
-  onPress,
-  done,
-}: {
-  children: React.ReactNode;
-  onPress: () => void;
-  done?: boolean;
-}) {
-  return (
-    <Pressable style={[styles.card, done && styles.cardDone]} onPress={onPress}>
-      {children}
-    </Pressable>
-  );
-}
-
 const styles = StyleSheet.create({
-  scroll: { paddingHorizontal: 24, paddingTop: spacing.huge, paddingBottom: 120, gap: spacing.xxl },
-  streakBlock: { alignItems: 'center', gap: spacing.xs },
+  scroll: {
+    paddingHorizontal: 24,
+    paddingTop: spacing.xl,
+    paddingBottom: 120,
+    gap: spacing.xl,
+  },
+  topBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  gear: { padding: spacing.sm, marginTop: spacing.xs },
+  streakBlock: { alignItems: 'center', gap: spacing.xs, marginTop: spacing.sm },
   streakNumber: {
     fontFamily: fonts.serifSemibold,
     fontSize: 64,
@@ -200,14 +222,7 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
     textAlign: 'center',
   },
-  card: {
-    backgroundColor: colors.surface,
-    borderRadius: radii.card,
-    padding: spacing.xl,
-    gap: spacing.sm,
-  },
-  cardDone: { opacity: 0.75 },
-  hint: { marginTop: spacing.md },
+  hint: { marginTop: spacing.sm },
   panic: {
     position: 'absolute',
     bottom: spacing.xl,
