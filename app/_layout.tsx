@@ -56,6 +56,10 @@ export default function RootLayout() {
           <Stack.Screen name="checkin" options={{ presentation: 'fullScreenModal' }} />
           <Stack.Screen name="simulator" options={{ presentation: 'fullScreenModal' }} />
           <Stack.Screen name="capsule" options={{ presentation: 'fullScreenModal' }} />
+          <Stack.Screen
+            name="cremation"
+            options={{ presentation: 'fullScreenModal', animation: 'fade' }}
+          />
           <Stack.Screen name="settings" options={{ presentation: 'card' }} />
           <Stack.Screen
             name="ressources"
