@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import { AppText, BreathingCircle, ScreenContainer } from '@/components';
 import { haptics } from '@/lib/haptics';
-import { colors, radii, spacing } from '@/theme';
+import { colors, fonts, radii, spacing } from '@/theme';
 import { selectExName, useQuizStore } from '@/state/quizStore';
 import {
   selectStreakDays,
@@ -126,14 +126,14 @@ const styles = StyleSheet.create({
   scroll: { paddingHorizontal: 24, paddingTop: spacing.huge, paddingBottom: 120, gap: spacing.xxl },
   streakBlock: { alignItems: 'center', gap: spacing.xs },
   streakNumber: {
-    fontFamily: 'Fraunces_600SemiBold',
+    fontFamily: fonts.serifSemibold,
     fontSize: 64,
     lineHeight: 70,
     color: colors.accentWarm,
   },
   gaugeBlock: { alignItems: 'center' },
   gaugeScore: {
-    fontFamily: 'Fraunces_600SemiBold',
+    fontFamily: fonts.serifSemibold,
     fontSize: 40,
     color: colors.textPrimary,
   },

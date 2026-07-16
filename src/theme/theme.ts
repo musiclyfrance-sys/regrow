@@ -53,16 +53,16 @@ export const gradients = {
 
 // ─── Typographie ─────────────────────────────────────────────────────────────
 /**
- * Fraunces : titres et verdicts (côté éditorial / journal intime), graisses 500–600.
- * Inter : interface et corps, graisses 400–600.
+ * Gooper : titres et verdicts (côté éditorial / journal intime), graisses 500–600.
+ * General Sans : interface et corps, graisses 400–600.
+ * Fichiers locaux dans assets/fonts (voir src/theme/useAppFonts.ts).
  */
 export const fonts = {
-  // Chargées via @expo-google-fonts (voir src/theme/useAppFonts.ts).
-  serifMedium: 'Fraunces_500Medium',
-  serifSemibold: 'Fraunces_600SemiBold',
-  sansRegular: 'Inter_400Regular',
-  sansMedium: 'Inter_500Medium',
-  sansSemibold: 'Inter_600SemiBold',
+  serifMedium: 'Gooper-Medium',
+  serifSemibold: 'Gooper-SemiBold',
+  sansRegular: 'GeneralSans-Regular',
+  sansMedium: 'GeneralSans-Medium',
+  sansSemibold: 'GeneralSans-Semibold',
 } as const;
 
 /** Échelle typographique : 32/26/20/17/15/13, interlignage généreux (≥1.4 sur les corps). */

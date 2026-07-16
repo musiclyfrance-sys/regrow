@@ -22,7 +22,7 @@ import {
   useSimulatorQuota,
   WEEKLY_QUOTA,
 } from '@/lib/simulator';
-import { colors, radii, spacing } from '@/theme';
+import { colors, fonts, radii, spacing } from '@/theme';
 import { selectExName, useQuizStore } from '@/state/quizStore';
 import { selectStreakDays, useStreakStore } from '@/state/streakStore';
 
@@ -327,7 +327,7 @@ const styles = StyleSheet.create({
     borderRadius: radii.card,
     backgroundColor: colors.surfaceRaised,
     color: colors.textPrimary,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.sansRegular,
     fontSize: 15,
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
@@ -350,7 +350,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   summaryStreak: {
-    fontFamily: 'Fraunces_600SemiBold',
+    fontFamily: fonts.serifSemibold,
     fontSize: 56,
     lineHeight: 62,
     color: colors.accentWarm,

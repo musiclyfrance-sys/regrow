@@ -20,7 +20,7 @@ import {
 import { QUIZ } from '@/config/quiz';
 import { PHASE_LABELS, QuestionStep } from '@/config/quizTypes';
 import { track } from '@/lib/analytics';
-import { colors, motion, radii, spacing } from '@/theme';
+import { colors, fonts, motion, radii, spacing } from '@/theme';
 import {
   AnswerValue,
   resolveText,
@@ -368,7 +368,7 @@ const styles = StyleSheet.create({
     borderRadius: radii.card,
     backgroundColor: colors.surfaceRaised,
     color: colors.textPrimary,
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.sansMedium,
     fontSize: 20,
     paddingHorizontal: spacing.xl,
     marginTop: spacing.md,

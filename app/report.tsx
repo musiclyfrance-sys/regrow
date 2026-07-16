@@ -16,7 +16,7 @@ const WEAK_HOUR_LABEL: Record<string, string> = {
 };
 
 /**
- * Le rapport complet — page éditoriale scrollable. Titre Fraunces, intertitres,
+ * Le rapport complet — page éditoriale scrollable. Titre Gooper, intertitres,
  * plan 90 jours en timeline. Le bouton final demande la permission notif
  * (à ce moment précis, jamais avant) via un pré-écran d'explication.
  */
