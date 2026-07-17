@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -9,7 +10,23 @@ import {
 } from 'react-native';
 import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
+import Svg, { Path } from 'react-native-svg';
 import { useReduceMotion } from '@/hooks/useReduceMotion';
+import { haptics } from '@/lib/haptics';
+
+/**
+ * Micro-encouragements — affichés sous la barre à des étapes clés.
+ * Le sentiment de progression, sans jamais un pourcentage.
+ */
+const ENCOURAGEMENTS: Record<number, string> = {
+  6: 'Bien. Les faits d’abord, les patterns ensuite.',
+  12: 'Tu avances vite. Continue sur ta lancée.',
+  20: 'Déjà un bon tiers. Ton profil se précise.',
+  27: 'Plus de la moitié. Le plus dur est fait.',
+  34: 'Les réponses s’assemblent. Ça prend forme.',
+  40: 'Dernière ligne droite. Ton plan se construit.',
+  45: 'Encore trois questions. Ton rapport est presque prêt.',
+};
 import {
   AppText,
   EmotionScale,
@@ -58,10 +75,14 @@ export default function QuizStepScreen() {
       QUIZ.slice(0, Math.max(0, idx)).filter((s) => s.kind === 'question').length,
     [idx],
   );
-  const totalQuestions = useMemo(
-    () => QUIZ.filter((s) => s.kind === 'question').length,
-    [],
-  );
+  // Nombre de questions par phase (les 4 segments de la barre).
+  const segments = useMemo(() => {
+    const counts = [0, 0, 0, 0];
+    for (const s of QUIZ) {
+      if (s.kind === 'question') counts[s.phase - 1]! += 1;
+    }
+    return counts;
+  }, []);
 
   const goNext = useCallback(() => {
     clearTimer();
@@ -74,6 +95,37 @@ export default function QuizStepScreen() {
     }
     router.push({ pathname: '/onboarding/quiz/[step]', params: { step: String(nextIdx) } });
   }, [idx, goTo, router]);
+
+  // Retour : revient à la QUESTION précédente (jamais dans un interlude
+  // auto-avançant), réponse déjà cochée, prête à être corrigée.
+  const prevQuestionIdx = useMemo(() => {
+    for (let i = idx - 1; i >= 0; i--) {
+      if (QUIZ[i]?.kind === 'question') return i;
+    }
+    return null;
+  }, [idx]);
+
+  const goBack = useCallback(() => {
+    if (prevQuestionIdx == null) return;
+    clearTimer();
+    haptics.selection();
+    goTo(prevQuestionIdx);
+    router.replace({
+      pathname: '/onboarding/quiz/[step]',
+      params: { step: String(prevQuestionIdx) },
+    });
+  }, [prevQuestionIdx, goTo, router]);
+
+  // Célébration discrète à chaque changement de phase.
+  const prevPhaseRef = useRef<number | null>(null);
+  useEffect(() => {
+    const step = QUIZ[idx];
+    const phase = step?.kind === 'question' ? step.phase : null;
+    if (phase != null && prevPhaseRef.current != null && phase > prevPhaseRef.current) {
+      haptics.soft();
+    }
+    if (phase != null) prevPhaseRef.current = phase;
+  }, [idx]);
 
   if (Number.isNaN(idx) || idx < 0 || idx >= QUIZ.length) {
     return <Redirect href="/onboarding/hook" />;
@@ -93,7 +145,8 @@ export default function QuizStepScreen() {
         autoAdvanceMs={current.autoAdvanceMs}
         onContinue={goNext}
         phaseLabel={PHASE_LABELS[current.phase]}
-        progress={questionsBefore / totalQuestions}
+        questionsDone={questionsBefore}
+        segments={segments}
       />
     );
   }
@@ -108,12 +161,36 @@ export default function QuizStepScreen() {
     advanceTimer.current = setTimeout(goNext, motion.autoAdvanceMs);
   };
 
-  const progress = (questionsBefore + 1) / totalQuestions;
-
   return (
     <ScreenContainer edges={['top', 'bottom']}>
       <View style={styles.header}>
-        <QuizProgress progress={progress} phaseLabel={PHASE_LABELS[q.phase]} />
+        {prevQuestionIdx != null && (
+          <Pressable
+            onPress={goBack}
+            hitSlop={12}
+            accessibilityLabel="Question précédente"
+            style={styles.backBtn}
+          >
+            <Svg width={22} height={22} viewBox="0 0 24 24">
+              <Path
+                d="M14.5 5.5 8 12l6.5 6.5"
+                stroke={colors.textSecondary}
+                strokeWidth={2.2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                fill="none"
+              />
+            </Svg>
+          </Pressable>
+        )}
+        <View style={styles.progressWrap}>
+          <QuizProgress
+            questionsDone={questionsBefore + 1}
+            segments={segments}
+            phaseLabel={PHASE_LABELS[q.phase]}
+            encouragement={ENCOURAGEMENTS[q.step]}
+          />
+        </View>
       </View>
 
       <KeyboardAvoidingView
@@ -314,7 +391,8 @@ function InterludeView({
   autoAdvanceMs,
   onContinue,
   phaseLabel,
-  progress,
+  questionsDone,
+  segments,
 }: {
   title?: string;
   body: string;
@@ -323,7 +401,8 @@ function InterludeView({
   autoAdvanceMs?: number;
   onContinue: () => void;
   phaseLabel: string;
-  progress: number;
+  questionsDone: number;
+  segments: number[];
 }) {
   const [showButton] = useState(!autoAdvanceMs);
 
@@ -343,7 +422,11 @@ function InterludeView({
       backgroundColor={colors.surface}
     >
       <View style={styles.interludeTop}>
-        <QuizProgress progress={progress} phaseLabel={phaseLabel} />
+        <QuizProgress
+          questionsDone={questionsDone}
+          segments={segments}
+          phaseLabel={phaseLabel}
+        />
       </View>
 
       <Animated.View entering={FadeIn.duration(500)} style={styles.interludeContent}>
@@ -378,7 +461,15 @@ function InterludeView({
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  header: { paddingHorizontal: 0, paddingTop: spacing.sm, paddingBottom: spacing.lg },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: spacing.md,
+    paddingTop: spacing.sm,
+    paddingBottom: spacing.lg,
+  },
+  backBtn: { paddingTop: 2, marginLeft: -spacing.sm },
+  progressWrap: { flex: 1 },
   scroll: { flexGrow: 1, paddingBottom: spacing.xl },
   prompt: { marginBottom: spacing.sm },
   helper: { marginBottom: spacing.lg },

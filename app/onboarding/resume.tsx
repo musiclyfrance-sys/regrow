@@ -23,6 +23,11 @@ export default function ResumeScreen() {
   const total = QUIZ.filter((s) => s.kind === 'question').length;
   const current = QUIZ[Math.min(index, QUIZ.length - 1)];
   const phaseLabel = current ? PHASE_LABELS[current.phase] : '';
+  const segments = (() => {
+    const counts = [0, 0, 0, 0];
+    for (const s of QUIZ) if (s.kind === 'question') counts[s.phase - 1]! += 1;
+    return counts;
+  })();
 
   const resume = () =>
     router.replace({ pathname: '/onboarding/quiz/[step]', params: { step: String(index) } });
@@ -38,7 +43,11 @@ export default function ResumeScreen() {
           {questionsDone > 1 ? 's' : ''} sur {total}. Rien n'est perdu.
         </AppText>
         <View style={styles.progress}>
-          <QuizProgress progress={questionsDone / total} phaseLabel={phaseLabel} />
+          <QuizProgress
+            questionsDone={questionsDone}
+            segments={segments}
+            phaseLabel={phaseLabel}
+          />
         </View>
       </View>
       <View style={styles.action}>
