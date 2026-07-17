@@ -58,7 +58,14 @@ const MOCK_REPLIES = [
   'Prends soin de toi.',
 ];
 
-const MOCK_CLOSING = 'Bon, faut vraiment que j’y aille. Salut.';
+const MOCK_CLOSING = 'Bon, je vais dormir moi. Salut.';
+
+/**
+ * Nombre de messages récents envoyés au serveur. Le début de la conversation
+ * n'apporte presque rien à la réponse suivante et coûte des tokens à chaque
+ * tour : on n'envoie que la fin, le serveur reçoit le compteur d'échanges réel.
+ */
+const HISTORY_WINDOW = 10;
 
 /**
  * Réponse du simulateur. Mock : réponse évasive du cru local.
@@ -79,9 +86,14 @@ export async function simulatorReply(
     return { text, safetyExit: false, closing: mustClose };
   }
 
+  // Historique tronqué aux derniers messages, en commençant sur un message
+  // utilisatrice (exigence de l'API), compteur d'échanges transmis à part.
+  let recent = messages.slice(-HISTORY_WINDOW);
+  while (recent.length > 0 && recent[0]!.role !== 'user') recent = recent.slice(1);
+
   const { data, error } = await supabase.functions.invoke<{ reply: string }>(
     'simulator',
-    { body: { profile, messages } },
+    { body: { profile, messages: recent, exchangeCount } },
   );
   if (error || !data?.reply) {
     return { text: MOCK_CLOSING, safetyExit: false, closing: true };
