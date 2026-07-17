@@ -35,10 +35,10 @@ export default function AccountScreen() {
     <ScreenContainer center>
       <View style={styles.content}>
         <AppText variant="title" center>
-          C'est débloqué.
+          Ton programme est débloqué.
         </AppText>
         <AppText variant="bodyLarge" color={colors.textSecondary} center style={styles.body}>
-          Sécurise ton espace pour ne jamais perdre ton autopsie ni ta streak.
+          Sécurise ton espace pour ne jamais perdre ton autopsie ni ton compteur.
         </AppText>
       </View>
 

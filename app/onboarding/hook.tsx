@@ -42,14 +42,6 @@ export default function HookScreen() {
       {showCta && (
         <Animated.View entering={FadeIn.duration(400)} style={styles.ctaBlock}>
           <PrimaryButton label="Commencer l'autopsie" onPress={onStart} fullWidth={false} />
-          <AppText
-            variant="caption"
-            color={colors.textSecondary}
-            center
-            style={styles.reassurance}
-          >
-            8 minutes. Anonyme. Sans compte.
-          </AppText>
           <PrimaryButton
             label="J'ai déjà un compte"
             variant="ghost"

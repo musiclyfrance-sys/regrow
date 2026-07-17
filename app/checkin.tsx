@@ -74,7 +74,7 @@ export default function CheckinScreen() {
 
   const shareInsight = async () => {
     if (!insight) return;
-    await Share.share({ message: `${insight.text}\n\n— Regrow` });
+    await Share.share({ message: `${insight.text}\n\nRegrow` });
     track('insight_shared');
   };
 
@@ -167,8 +167,8 @@ export default function CheckinScreen() {
             Un contact ne remet pas ton travail à zéro.
           </AppText>
           <AppText variant="bodyLarge" color={colors.textSecondary} center style={styles.helper}>
-            Ta streak repart, ton Détox Score garde 80 % de sa valeur. Ce que tu as
-            construit reste construit.
+            Ton compteur repart, et ton Détox Score garde 80 % de sa valeur. Ce que
+            tu as construit reste construit.
           </AppText>
           <View style={styles.bottom}>
             <PrimaryButton label="On continue" onPress={showInsight} />
@@ -179,7 +179,7 @@ export default function CheckinScreen() {
       {step === 'insight' && insight && (
         <Animated.View entering={FadeIn.duration(400)} style={styles.centerWrap}>
           <AppText variant="caption" color={colors.accentWarm} style={styles.insightLabel}>
-            TON INSIGHT DU JOUR
+            TON CONSEIL DU JOUR
           </AppText>
           <View style={styles.insightCard}>
             <AppText variant="bodyLarge" style={styles.insightText}>

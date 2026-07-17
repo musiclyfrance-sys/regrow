@@ -24,7 +24,7 @@ const PHASE_1: Challenge[] = [
   { text: 'Écris 3 choses que tu ne supportais plus. Garde la liste pour les soirs de doute.' },
   { text: 'Change ton fond d’écran pour une photo de toi que tu aimes.' },
   { text: 'Prépare-toi un vrai repas ce soir. Assiette, table, pas de téléphone.' },
-  { text: 'Supprime son numéro des favoris. Pas le numéro — juste le raccourci.' },
+  { text: 'Supprime son numéro des favoris, juste le raccourci, pas le numéro.' },
   { text: 'Douche longue, playlist forte. Les deux en même temps.' },
   { text: 'Note l’heure où c’était le plus dur aujourd’hui. Observe : elle recule.' },
   { text: 'Dis à UNE personne de confiance où tu en es vraiment.' },

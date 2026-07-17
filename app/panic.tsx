@@ -25,7 +25,7 @@ export default function PanicScreen() {
   return (
     <ScreenContainer center>
       <AppText variant="title" center style={styles.headline}>
-        Respire. Tu es à 2 taps de tout garder intact.
+        Respire un instant, tu es à deux gestes de tout garder intact.
       </AppText>
 
       <View style={styles.actions}>

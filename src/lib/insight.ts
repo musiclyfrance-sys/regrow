@@ -37,24 +37,24 @@ const MOCK_ANGLES: { angle: string; build: MockBuilder }[] = [
   {
     angle: 'idealisation',
     build: ({ ex }) =>
-      `Le manque de ${ex} que tu ressens n'est pas la preuve que c'était la bonne personne. C'est la preuve que tu es capable d'attachement — et ça, ça te suit partout, y compris loin de ${ex}. Tu ne pleures pas une personne parfaite, tu pleures la place qu'elle occupait.`,
+      `Le manque de ${ex} que tu ressens n'est pas la preuve que c'était la bonne personne. C'est la preuve que tu es capable d'attachement, et ça te suit partout, y compris loin de ${ex}. Tu ne pleures pas une personne parfaite, tu pleures la place qu'elle occupait.`,
   },
   {
     angle: 'recadrage',
     build: ({ mood }) =>
       mood <= 2
-        ? `Ce soir c'est lourd, et tu n'as pas à faire semblant du contraire. Mais une soirée difficile n'est pas une rechute : c'est une soirée. Demain, ton seul travail sera de te lever. Le reste suivra. Tenir, certains soirs, c'est déjà tout faire.`
+        ? `Ce soir c'est lourd, et tu n'as pas à faire semblant du contraire. Mais une soirée difficile n'est pas une rechute : c'est une soirée. Demain, ton seul travail sera de te lever. Le reste suivra, car tenir, certains soirs, c'est déjà tout faire.`
         : `Tu as remarqué ? Il y a des moments dans ta journée où tu n'as pas pensé à tout ça. Ils sont encore courts, mais ils existent. La guérison ne fait pas de bruit : elle élargit ces moments-là, un par un.`,
   },
   {
     angle: 'energie',
     build: ({ ex }) =>
-      `Toute l'énergie que tu mettais à décoder les silences de ${ex}, tu l'as encore. Elle ne demande qu'à changer d'adresse. Chaque fois que tu la rediriges vers toi — un repas correct, une amie rappelée, vingt minutes dehors — tu récupères ce qui t'appartenait déjà.`,
+      `Toute l'énergie que tu mettais à décoder les silences de ${ex}, tu l'as encore. Elle ne demande qu'à changer d'adresse. Chaque fois que tu la rediriges vers toi, un repas correct, une amie rappelée, vingt minutes dehors, tu récupères ce qui t'appartenait déjà.`,
   },
   {
     angle: 'attente',
     build: ({ ex }) =>
-      `Attendre un signe de ${ex}, c'est laisser quelqu'un d'absent décider de tes soirées. Le silence, lui, t'a déjà donné sa réponse. Ce que tu attends n'arrivera peut-être jamais — mais ce que tu construis, personne ne peut te le retirer.`,
+      `Attendre un signe de ${ex}, c'est laisser quelqu'un d'absent décider de tes soirées. Le silence, lui, t'a déjà donné sa réponse. Ce que tu attends n'arrivera peut-être jamais, mais ce que tu construis, personne ne peut te le retirer.`,
   },
 ];
 

@@ -155,15 +155,15 @@ export default function SimulatorScreen() {
             LE CRASH TEST
           </AppText>
           <AppText variant="title" center>
-            Écris-lui ici. Pas là-bas.
+            Écris-lui ici, pas là-bas.
           </AppText>
           <AppText variant="bodyLarge" color={colors.textSecondary} center>
             Le message que tu brûles d'envoyer à {ex}, envoie-le ici d'abord.
-            D'après tout ce que tu m'as raconté — sa façon de fuir, ses réponses
-            floues — je te montre comment la conversation finirait vraiment.
+            D'après tout ce que tu m'as raconté de lui, je te montre comment la
+            conversation finirait vraiment.
           </AppText>
           <AppText variant="body" color={colors.textPrimary} center>
-            Tu gardes ta streak. Tu perds juste l'illusion.
+            Tu gardes ton compteur de jours intact, et tu perds juste l'illusion.
           </AppText>
           <AppText variant="caption" color={colors.textSecondary} center>
             Il te reste {remaining} crash test{remaining > 1 ? 's' : ''} cette semaine
@@ -202,12 +202,12 @@ export default function SimulatorScreen() {
       <ScreenContainer center>
         <View style={styles.centerContent}>
           <AppText variant="title" center>
-            Et pendant tout ce temps…
+            Pendant tout ce temps, rien n'a bougé.
           </AppText>
           <View style={styles.summaryCard}>
             <AppText style={styles.summaryStreak}>{streak}</AppText>
             <AppText variant="body" color={colors.textSecondary} center>
-              {streak > 1 ? 'jours' : 'jour'} sans contact. Ta streak est intacte.
+              {streak > 1 ? 'jours' : 'jour'} sans contact. Ton compteur est intact.
               Tu as eu la conversation sans rien casser.
             </AppText>
           </View>

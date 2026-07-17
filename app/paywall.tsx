@@ -143,9 +143,9 @@ export default function PaywallScreen() {
         {/* Ce qui l'attend, jour après jour. */}
         <View style={styles.journey}>
           {[
-            { day: 'Ce soir', text: 'Tu lis ton rapport. Tu comprends enfin — et rien que ça, ça change la nuit.' },
-            { day: 'Jours 1–14', text: "Chaque soir, 2 minutes de check-in. Les envies de lui écrire s'espacent, ta streak grimpe." },
-            { day: 'Jour 30', text: 'Tu réécoutes ta voix du premier jour. Tu mesures le chemin — il est déjà énorme.' },
+            { day: 'Ce soir', text: 'Tu lis ton rapport, tu comprends enfin, et rien que ça change la nuit.' },
+            { day: 'Jours 1–14', text: "Chaque soir, 2 minutes de check-in. Les envies de lui écrire s'espacent, ton compteur grimpe." },
+            { day: 'Jour 30', text: 'Tu réécoutes ta voix du premier jour, et tu mesures le chemin parcouru.' },
             { day: 'Jour 90', text: 'Le coffre s\'ouvre. Tu choisis : récupérer, ou brûler. Toi, tu es déjà ailleurs.' },
           ].map((step, i) => (
             <View key={step.day} style={styles.journeyRow}>
@@ -189,7 +189,7 @@ export default function PaywallScreen() {
           {[
             'Ton rapport complet + le plan 90 jours taillé sur tes réponses',
             'Le check-in du soir et un insight nouveau chaque jour',
-            'Le crash test de message, le coffre-fort, la streak : tout pour tenir',
+            'Le crash test de message, le coffre-fort et le compteur de jours',
           ].map((b) => (
             <View key={b} style={styles.benefitRow}>
               <View style={styles.benefitDot} />

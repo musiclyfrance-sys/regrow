@@ -48,7 +48,7 @@ export default function TeaserScreen() {
               TON PROGRAMME PERSONNALISÉ
             </AppText>
             <AppText variant="display">
-              90 jours pour le sortir de ta tête.
+              90 jours pour le sortir de ta tête, jour après jour.
             </AppText>
             <AppText variant="bodyLarge" color={colors.textSecondary}>
               Pas de thérapie interminable. Des rituels courts, calibrés sur tes
@@ -102,7 +102,7 @@ export default function TeaserScreen() {
   // ─────────── Temps 1 : LA PREUVE ───────────
   const sections = [
     { key: 'attachement', title: `Le style d'attachement de ${ex}`, text: report?.attachement_ex },
-    { key: 'pattern', title: 'Ton pattern à toi', text: report?.pattern_utilisatrice },
+    { key: 'pattern', title: 'Ta façon d’aimer', text: report?.pattern_utilisatrice },
     { key: 'dynamique', title: 'La dynamique qui vous a tués', text: report?.dynamique },
     { key: 'parts', title: 'Sa part et ta part', text: report?.parts },
     { key: 'redflags', title: 'Les red flags que tu avais vus', text: report?.red_flags?.join('\n') },
@@ -146,7 +146,7 @@ export default function TeaserScreen() {
             ))}
 
             <AppText variant="body" color={colors.textSecondary} center style={styles.more}>
-              Et ce rapport n'est que le jour 1.
+              Et ce rapport n'est que le premier jour du programme.
             </AppText>
           </View>
         </ScrollView>
@@ -177,7 +177,7 @@ const FEATURES = [
   },
   {
     icon: 'flame' as const,
-    title: 'La streak et les défis',
+    title: 'Le compteur de jours et les défis',
     desc: 'Chaque jour tenu se voit. Chaque palier se célèbre. Ta reconstruction devient visible.',
   },
 ];

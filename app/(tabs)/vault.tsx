@@ -84,7 +84,7 @@ export default function VaultScreen() {
       <ScreenContainer center>
         <View style={styles.centerContent}>
           <AppText variant="title" center>
-            90 jours. Tu y es.
+            90 jours, tu y es.
           </AppText>
           <AppText variant="bodyLarge" color={colors.textSecondary} center>
             {itemUris.length} souvenir{itemUris.length > 1 ? 's' : ''} t'attendent.
@@ -93,7 +93,7 @@ export default function VaultScreen() {
         </View>
         <View style={styles.bottomBar}>
           <PrimaryButton
-            label="Brûler. Tout."
+            label="Tout brûler"
             variant="danger"
             onPress={() => router.push('/cremation')}
           />
@@ -123,7 +123,7 @@ export default function VaultScreen() {
         <View style={styles.centerContent}>
           <AppText style={styles.lockIcon}>🔒</AppText>
           <AppText variant="title" center>
-            {itemUris.length} souvenir{itemUris.length > 1 ? 's' : ''} sous clé.
+            Tu as mis {itemUris.length} souvenir{itemUris.length > 1 ? 's' : ''} sous clé.
           </AppText>
           <AppText variant="bodyLarge" color={colors.textSecondary} center>
             Le coffre s'ouvrira le {unlockDate}. D'ici là, il travaille pour toi.
@@ -150,7 +150,7 @@ export default function VaultScreen() {
         <AppText variant="title">Ton coffre-fort</AppText>
         <AppText variant="body" color={colors.textSecondary}>
           Range ici les photos et captures qui te font retomber. Une fois le
-          coffre verrouillé, elles seront hors de portée jusqu'à J+90 — sans
+          coffre verrouillé, elles seront hors de portée jusqu'à J+90, sans
           être perdues.
         </AppText>
 

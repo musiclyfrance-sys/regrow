@@ -158,7 +158,7 @@ export default function CapsuleScreen() {
           </AppText>
           <AppText variant="bodyLarge" color={colors.textSecondary} center>
             Elle te reviendra le {unlockDate}. D'ici là, personne ne peut
-            l'écouter — pas même toi.
+            l'écouter, pas même toi.
           </AppText>
         </View>
         <View style={styles.bottom}>

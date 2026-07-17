@@ -18,8 +18,8 @@ import { useAppStore } from '@/state/appStore';
 const STATUS_MESSAGES = (ex: string) => [
   'Lecture de tes 47 réponses',
   'Reconstruction de la chronologie',
-  `Analyse des patterns de ${ex}`,
-  'Analyse de tes propres patterns',
+  `Analyse de ses habitudes`,
+  'Analyse de tes propres habitudes',
   'Croisement avec 12 000 autopsies similaires',
   'Rédaction de ton rapport',
 ];

@@ -1,11 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
-import {
-  FlatList,
-  ScrollView,
-  StyleSheet,
-  useWindowDimensions,
-  View,
-} from 'react-native';
+import { FlatList, ScrollView, StyleSheet, View } from 'react-native';
 import { AppText } from './AppText';
 import { PrimaryButton } from './PrimaryButton';
 import { haptics } from '@/lib/haptics';
@@ -42,7 +36,9 @@ function splitKeyPhrase(text: string): { key: string; rest: string } {
  * puis le corps, aéré. Points de progression en haut, navigation en bas.
  */
 export function ReportPager({ report, exName, finalAction }: Props) {
-  const { width } = useWindowDimensions();
+  // Largeur mesurée du CADRE (pas de la fenêtre) : les pages restent dans
+  // l'écran quelle que soit la taille d'affichage.
+  const [width, setWidth] = useState(0);
   const listRef = useRef<FlatList<Chapter>>(null);
   const [page, setPage] = useState(0);
 
@@ -66,7 +62,7 @@ export function ReportPager({ report, exName, finalAction }: Props) {
       {
         key: 'pattern',
         eyebrow: 'CHAPITRE 2 · 6',
-        title: 'Ton pattern à toi',
+        title: 'Ta façon d’aimer',
         ...splitToFields(report.pattern_utilisatrice),
         kind: 'text',
       },
@@ -102,11 +98,17 @@ export function ReportPager({ report, exName, finalAction }: Props) {
 
   const goTo = (index: number) => {
     const clamped = Math.max(0, Math.min(chapters.length - 1, index));
+    // L'état passe tout de suite : les boutons restent justes même si
+    // l'événement de fin de défilement n'arrive pas (cas du web).
+    setPage(clamped);
     listRef.current?.scrollToIndex({ index: clamped, animated: true });
   };
 
   return (
-    <View style={styles.root}>
+    <View
+      style={styles.root}
+      onLayout={(e) => setWidth(Math.round(e.nativeEvent.layout.width))}
+    >
       {/* Points de progression. */}
       <View style={styles.dots}>
         {chapters.map((c, i) => (
@@ -114,6 +116,7 @@ export function ReportPager({ report, exName, finalAction }: Props) {
         ))}
       </View>
 
+      {width > 0 && (
       <FlatList
         ref={listRef}
         data={chapters}
@@ -199,6 +202,7 @@ export function ReportPager({ report, exName, finalAction }: Props) {
           </View>
         )}
       />
+      )}
 
       {/* Navigation de chapitres. */}
       <View style={styles.nav}>

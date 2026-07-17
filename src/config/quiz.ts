@@ -394,7 +394,7 @@ export const QUIZ: QuizStep[] = [
       } else {
         style = 'un attachement plus ambivalent qu’il n’y paraît';
       }
-      return `Le style d'attachement de ${ex} penche vers ${style}. L'analyse complète le confirmera ou non — et surtout, elle te dira ce que ça a déclenché chez toi.`;
+      return `Le style d'attachement de ${ex} penche vers ${style}. L'analyse complète le confirmera ou non, et elle te dira ce que ça a déclenché chez toi.`;
     },
   },
 

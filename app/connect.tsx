@@ -54,7 +54,7 @@ export default function ConnectScreen() {
           Contente de te revoir.
         </AppText>
         <AppText variant="bodyLarge" color={colors.textSecondary} center>
-          Retrouve ton autopsie, ta streak et ton programme, exactement là où tu
+          Retrouve ton autopsie, ton compteur et ton programme, exactement là où tu
           les avais laissés.
         </AppText>
       </View>

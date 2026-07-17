@@ -136,7 +136,7 @@ export default function HomeScreen() {
         {/* Milestone du jour : la carte à partager. */}
         {reachedMilestone != null && (
           <ActionCard
-            eyebrow={`MILESTONE · J${reachedMilestone}`}
+            eyebrow={`PALIER · J${reachedMilestone}`}
             title={`${reachedMilestone} jours sans lui écrire.`}
             cta="Voir ma carte"
             accentColor={colors.accentWarm}

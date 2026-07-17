@@ -19,7 +19,7 @@ import { haptics } from '@/lib/haptics';
  * Le sentiment de progression, sans jamais un pourcentage.
  */
 const ENCOURAGEMENTS: Record<number, string> = {
-  6: 'Bien. Les faits d’abord, les patterns ensuite.',
+  6: 'Les faits sont posés, on passe aux habitudes.',
   12: 'Tu avances vite. Continue sur ta lancée.',
   20: 'Déjà un bon tiers. Ton profil se précise.',
   27: 'Plus de la moitié. Le plus dur est fait.',

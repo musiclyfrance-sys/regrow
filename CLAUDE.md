@@ -9,6 +9,11 @@ TypeScript strict, Expo Router, Supabase (anonyme, UE), Edge Functions IA
 - **Français, tutoiement, ton « grande sœur lucide »** : directe, chaleureuse,
   jamais clinique, jamais coach agressive. Le mot **programme** remplace
   toujours **thérapie**.
+- **Règles d'écriture des textes de l'app** : jamais de tiret cadratin (—),
+  jamais de jargon (pattern, milestone, insight → façon d'aimer, palier,
+  conseil), jamais de fragments de 1 à 3 mots suivis d'un point, jamais de
+  phrase longue qui n'apporte rien. Des phrases complètes, courtes, avec une
+  virgule et un point. Dire uniquement ce qui compte.
 - **Mode sombre unique** (usage nocturne, au lit). Tous les tokens viennent de
   `src/theme/theme.ts` — aucune couleur/espacement/durée codé en dur ailleurs.
 - **Un seul choix ou une seule action par écran** pendant l'onboarding.
