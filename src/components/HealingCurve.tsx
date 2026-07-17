@@ -10,7 +10,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { AppText } from './AppText';
 import { useReduceMotion } from '@/hooks/useReduceMotion';
-import { colors, spacing } from '@/theme';
+import { colors, spacing, themedStyles } from '@/theme';
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
@@ -75,7 +75,7 @@ export function HealingCurve({ exName }: { exName: string }) {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   card: {
     backgroundColor: colors.surface,
     borderRadius: 20,
@@ -84,4 +84,4 @@ const styles = StyleSheet.create({
   },
   label: { letterSpacing: 0.8 },
   axis: { flexDirection: 'row', justifyContent: 'space-between' },
-});
+}));

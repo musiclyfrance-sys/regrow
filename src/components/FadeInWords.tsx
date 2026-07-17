@@ -8,7 +8,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { AppText } from './AppText';
 import { useReduceMotion } from '@/hooks/useReduceMotion';
-import { colors, type as typeScale } from '@/theme';
+import { colors, type as typeScale, themedStyles } from '@/theme';
 
 interface Props {
   text: string;
@@ -58,10 +58,10 @@ export function FadeInWords({ text, totalMs = 2000, onDone }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   wrap: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
   },
-});
+}));

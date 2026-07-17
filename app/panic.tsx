@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import { AppText, BreathingCircle, PrimaryButton, ScreenContainer } from '@/components';
 import { track } from '@/lib/analytics';
 import { haptics } from '@/lib/haptics';
-import { colors, spacing } from '@/theme';
+import { colors, spacing, themedStyles } from '@/theme';
 
 /**
  * Panic button — modale immédiate qui respire avec l'utilisatrice.
@@ -88,9 +88,9 @@ function BreathingExercise({ onDone }: { onDone: () => void }) {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   headline: { paddingHorizontal: spacing.md },
   actions: { position: 'absolute', bottom: spacing.huge, left: 24, right: 24, gap: spacing.md },
   breatheHint: { marginTop: spacing.huge, paddingHorizontal: spacing.lg },
   doneBtn: { position: 'absolute', bottom: spacing.huge, left: 24, right: 24 },
-});
+}));

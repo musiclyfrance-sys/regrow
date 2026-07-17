@@ -4,7 +4,7 @@ import Svg, { Path } from 'react-native-svg';
 import { AppText, ScreenContainer } from '@/components';
 import { ARTICLES } from '@/config/library';
 import { track } from '@/lib/analytics';
-import { colors, spacing } from '@/theme';
+import { colors, spacing, themedStyles } from '@/theme';
 
 /**
  * Lecture d'un article — typographie généreuse, sections courtes,
@@ -68,7 +68,7 @@ export default function ArticleScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   topBar: { paddingHorizontal: spacing.lg, paddingTop: spacing.sm },
   backBtn: { padding: spacing.sm, alignSelf: 'flex-start' },
   scroll: {
@@ -81,4 +81,4 @@ const styles = StyleSheet.create({
   section: { gap: spacing.md, marginTop: spacing.sm },
   para: { lineHeight: 27 },
   footer: { marginTop: spacing.xl, fontStyle: 'italic' },
-});
+}));

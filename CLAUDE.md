@@ -14,8 +14,11 @@ TypeScript strict, Expo Router, Supabase (anonyme, UE), Edge Functions IA
   conseil), jamais de fragments de 1 à 3 mots suivis d'un point, jamais de
   phrase longue qui n'apporte rien. Des phrases complètes, courtes, avec une
   virgule et un point. Dire uniquement ce qui compte.
-- **Mode sombre unique** (usage nocturne, au lit). Tous les tokens viennent de
-  `src/theme/theme.ts` — aucune couleur/espacement/durée codé en dur ailleurs.
+- **Deux modes : nuit (défaut) et jour**, bascule via le soleil/la lune sur
+  l'accueil. Palettes dans `src/theme/palettes.ts`, mêmes rôles de tokens dans
+  les deux modes. Feuilles de style de module via `themedStyles(...)`, lectures
+  dynamiques via `colors`/`tints`/`gradients` — aucune couleur/espacement/durée
+  codé en dur ailleurs. Les cartes à partager restent toujours en marque nuit.
 - **Un seul choix ou une seule action par écran** pendant l'onboarding.
 - **Anonyme jusqu'au paiement** : session Supabase anonyme, aucun compte ni
   demande de notification avant les moments spécifiés (compte après achat,

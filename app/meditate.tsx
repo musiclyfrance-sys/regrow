@@ -6,7 +6,7 @@ import { AppText, BreathingCircle, PrimaryButton, ScreenContainer } from '@/comp
 import { MEDITATIONS, Meditation } from '@/config/library';
 import { track } from '@/lib/analytics';
 import { haptics } from '@/lib/haptics';
-import { colors, radii, spacing } from '@/theme';
+import { colors, radii, spacing, themedStyles } from '@/theme';
 
 /**
  * Méditations guidées par le texte — pas de voix, des phrases qui se posent
@@ -157,7 +157,7 @@ function MeditationPlayer({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   header: { gap: spacing.xs, marginTop: spacing.xl },
   pressed: { opacity: 0.85 },
   list: { gap: spacing.md, marginTop: spacing.xxl },
@@ -203,4 +203,4 @@ const styles = StyleSheet.create({
     right: 24,
     gap: spacing.md,
   },
-});
+}));

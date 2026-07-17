@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import Svg, { Circle, Polyline } from 'react-native-svg';
 import { AppText, ScreenContainer } from '@/components';
 import { MOODS } from '@/config/checkin';
-import { colors, fonts, radii, spacing } from '@/theme';
+import { colors, fonts, radii, spacing, themedStyles } from '@/theme';
 import {
   Checkin,
   selectProgramDay,
@@ -161,7 +161,7 @@ function CheckinRow({ checkin }: { checkin: Checkin }) {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   scroll: {
     paddingHorizontal: 24,
     paddingTop: spacing.xl,
@@ -203,4 +203,4 @@ const styles = StyleSheet.create({
   },
   checkinFace: { fontSize: 22, lineHeight: 28 },
   checkinInfo: { flex: 1, gap: 1 },
-});
+}));

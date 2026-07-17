@@ -5,7 +5,7 @@ import { AppText, ScreenContainer } from '@/components';
 import { LibraryIcon, LibraryIconName } from '@/components/LibraryIcon';
 import { ARTICLES, QUOTES, SOUNDS } from '@/config/library';
 import { haptics } from '@/lib/haptics';
-import { colors, radii, spacing, tints } from '@/theme';
+import { colors, radii, spacing, tints, themedStyles } from '@/theme';
 
 /** Citation du jour : stable sur la journée, change chaque soir. */
 function quoteOfToday(): string {
@@ -195,7 +195,7 @@ export default function LibraryScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   scroll: {
     paddingHorizontal: 24,
     paddingTop: spacing.xl,
@@ -265,4 +265,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   articleText: { flex: 1, gap: 2 },
-});
+}));

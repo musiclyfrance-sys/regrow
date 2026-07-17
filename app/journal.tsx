@@ -15,7 +15,7 @@ import { track } from '@/lib/analytics';
 import { detectsDistress } from '@/lib/distress';
 import { haptics } from '@/lib/haptics';
 import { JOURNAL_PROMPTS, JournalEntry, useJournalStore } from '@/state/journalStore';
-import { colors, fonts, radii, spacing, tints } from '@/theme';
+import { colors, fonts, radii, spacing, tints, themedStyles } from '@/theme';
 
 function formatDate(iso: string): string {
   const d = new Date(iso);
@@ -172,7 +172,7 @@ export default function JournalScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   flex: { flex: 1 },
   pressed: { opacity: 0.85 },
   header: { paddingHorizontal: 24, marginTop: spacing.xl, gap: spacing.xs },
@@ -231,4 +231,4 @@ const styles = StyleSheet.create({
     right: 24,
     gap: spacing.md,
   },
-});
+}));

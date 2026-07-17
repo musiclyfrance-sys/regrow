@@ -4,7 +4,7 @@ import { AppText } from './AppText';
 import { PrimaryButton } from './PrimaryButton';
 import { haptics } from '@/lib/haptics';
 import type { AutopsyReport } from '@/lib/ai';
-import { colors, radii, spacing } from '@/theme';
+import { colors, radii, spacing, themedStyles } from '@/theme';
 
 interface Chapter {
   key: string;
@@ -241,7 +241,7 @@ function splitToFields(text: string): { keyPhrase: string; body: string } {
   return { keyPhrase: key, body: rest };
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   root: { flex: 1 },
   dots: {
     flexDirection: 'row',
@@ -309,4 +309,4 @@ const styles = StyleSheet.create({
     borderTopColor: colors.border,
   },
   navSpacer: { width: 1 },
-});
+}));

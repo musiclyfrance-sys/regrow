@@ -7,7 +7,7 @@ import { CONTACT_OPTIONS, MOODS, questionOfDay } from '@/config/checkin';
 import { track } from '@/lib/analytics';
 import { haptics } from '@/lib/haptics';
 import { DailyInsight, generateInsight } from '@/lib/insight';
-import { colors, radii, spacing } from '@/theme';
+import { colors, radii, spacing, themedStyles } from '@/theme';
 import { selectExName, resolveText, useQuizStore } from '@/state/quizStore';
 import {
   ContactDeclaration,
@@ -196,7 +196,7 @@ export default function CheckinScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   close: { position: 'absolute', top: spacing.xl, right: spacing.xxl, zIndex: 10 },
   stepWrap: { flex: 1, paddingTop: spacing.huge * 1.5, gap: spacing.lg },
   centerWrap: { flex: 1, justifyContent: 'center', gap: spacing.lg },
@@ -236,4 +236,4 @@ const styles = StyleSheet.create({
     borderLeftColor: colors.accentWarm,
   },
   insightText: { lineHeight: 27 },
-});
+}));

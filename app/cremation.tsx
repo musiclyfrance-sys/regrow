@@ -15,7 +15,7 @@ import { AppText, PrimaryButton, ScreenContainer, ShareCardSheet } from '@/compo
 import { track } from '@/lib/analytics';
 import { haptics } from '@/lib/haptics';
 import { useReduceMotion } from '@/hooks/useReduceMotion';
-import { colors, gradients, motion, radii, spacing } from '@/theme';
+import { colors, gradients, motion, radii, spacing, themedStyles } from '@/theme';
 import { useVaultStore } from '@/state/vaultStore';
 
 const { height: SCREEN_H } = Dimensions.get('window');
@@ -183,7 +183,7 @@ function Ember({ index }: { index: number }) {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   memories: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -224,4 +224,4 @@ const styles = StyleSheet.create({
   certLabel: { letterSpacing: 2 },
   certLine: { height: 1, backgroundColor: colors.border, marginVertical: spacing.sm },
   bottomBar: { position: 'absolute', bottom: spacing.xl, left: 24, right: 24, gap: spacing.md },
-});
+}));

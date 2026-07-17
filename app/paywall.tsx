@@ -13,7 +13,7 @@ import {
   purchase,
   restore,
 } from '@/lib/purchases';
-import { colors, motion, radii, spacing } from '@/theme';
+import { colors, motion, radii, spacing, themedStyles } from '@/theme';
 import { useAppStore } from '@/state/appStore';
 import { selectExName, useQuizStore } from '@/state/quizStore';
 
@@ -296,7 +296,7 @@ function OfferCard({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   closeWrap: { position: 'absolute', top: spacing.sm, left: spacing.xxl, zIndex: 10 },
   scroll: { paddingHorizontal: 24, paddingTop: spacing.huge, paddingBottom: spacing.lg, gap: spacing.lg },
   subtitle: {},
@@ -373,4 +373,4 @@ const styles = StyleSheet.create({
   sheetBody: {},
   introPrice: { alignItems: 'center', gap: spacing.xs },
   introRefuse: { alignItems: 'center', paddingTop: spacing.xs },
-});
+}));

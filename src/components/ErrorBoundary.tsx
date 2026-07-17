@@ -2,7 +2,7 @@ import { Component, ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { AppText } from './AppText';
 import { PrimaryButton } from './PrimaryButton';
-import { colors, spacing } from '@/theme';
+import { colors, spacing, themedStyles } from '@/theme';
 
 interface Props {
   children: ReactNode;
@@ -48,7 +48,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: colors.background,
@@ -57,4 +57,4 @@ const styles = StyleSheet.create({
   },
   content: { gap: spacing.md },
   action: { position: 'absolute', bottom: spacing.huge, left: 24, right: 24 },
-});
+}));

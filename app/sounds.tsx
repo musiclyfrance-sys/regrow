@@ -6,7 +6,7 @@ import { LibraryIcon, LibraryIconName } from '@/components/LibraryIcon';
 import { SLEEP_TIMERS_MIN, SOUNDS, SoundId } from '@/config/library';
 import { haptics } from '@/lib/haptics';
 import { playSound, playingSoundId, setSleepTimer, stopSound } from '@/lib/soundPlayer';
-import { colors, radii, spacing, tints } from '@/theme';
+import { colors, radii, spacing, tints, themedStyles } from '@/theme';
 
 const ICONS: Record<SoundId, LibraryIconName> = {
   pluie: 'rain',
@@ -15,12 +15,14 @@ const ICONS: Record<SoundId, LibraryIconName> = {
   nuit: 'moon',
 };
 
-const ACCENTS: Record<SoundId, string> = {
-  pluie: colors.primarySoft,
-  ocean: colors.success,
-  feu: colors.accentWarm,
-  nuit: colors.primary,
-};
+// Fonction et pas constante : les couleurs suivent le mode nuit / jour.
+const accentOf = (id: SoundId): string =>
+  ({
+    pluie: colors.primarySoft,
+    ocean: colors.success,
+    feu: colors.accentWarm,
+    nuit: colors.primary,
+  })[id];
 
 /**
  * Sons relaxants — une boucle à la fois, minuterie de sommeil.
@@ -70,12 +72,12 @@ export default function SoundsScreen() {
               <View
                 style={[
                   styles.tileIcon,
-                  { backgroundColor: active ? ACCENTS[s.id] : tints.cream },
+                  { backgroundColor: active ? accentOf(s.id) : tints.cream },
                 ]}
               >
                 <LibraryIcon
                   name={ICONS[s.id]}
-                  color={active ? colors.background : ACCENTS[s.id]}
+                  color={active ? colors.background : accentOf(s.id)}
                   size={24}
                 />
               </View>
@@ -133,7 +135,7 @@ export default function SoundsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   header: { gap: spacing.xs, marginTop: spacing.xl },
   pressed: { opacity: 0.85 },
   grid: {
@@ -178,4 +180,4 @@ const styles = StyleSheet.create({
     right: 24,
     gap: spacing.md,
   },
-});
+}));

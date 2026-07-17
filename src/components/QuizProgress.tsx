@@ -11,7 +11,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { AppText } from './AppText';
 import { useReduceMotion } from '@/hooks/useReduceMotion';
-import { colors, radii, spacing } from '@/theme';
+import { colors, radii, spacing, themedStyles } from '@/theme';
 
 interface Props {
   /** Nombre de questions répondues (0 → total). */
@@ -140,7 +140,7 @@ function Segment({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   container: { gap: spacing.sm },
   track: { flexDirection: 'row', gap: 5 },
   segment: {
@@ -165,4 +165,4 @@ const styles = StyleSheet.create({
   },
   label: { letterSpacing: 0.4 },
   encouragement: { letterSpacing: 0.3 },
-});
+}));

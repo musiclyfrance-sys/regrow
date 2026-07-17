@@ -17,7 +17,7 @@ import { challengeOfDay, MILESTONE_DAYS } from '@/config/challenges';
 import { track } from '@/lib/analytics';
 import { haptics } from '@/lib/haptics';
 import { armNotifications } from '@/lib/notifications';
-import { colors, fonts, radii, spacing, tints } from '@/theme';
+import { colors, fonts, radii, spacing, tints, themedStyles, useThemeStore } from '@/theme';
 import { useAppStore } from '@/state/appStore';
 import { useCapsuleStore } from '@/state/capsuleStore';
 import { resolveText, selectExName, useQuizStore } from '@/state/quizStore';
@@ -119,6 +119,8 @@ function ToolTile({
  */
 export default function HomeScreen() {
   const router = useRouter();
+  const mode = useThemeStore((s) => s.mode);
+  const toggleMode = useThemeStore((s) => s.toggleMode);
   const profile = useQuizStore((s) => s.profile);
   const ex = selectExName({ profile });
   const userName = useAppStore((s) => s.userName);
@@ -163,9 +165,9 @@ export default function HomeScreen() {
   return (
     <ScreenContainer padded={false}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {/* Salutation personnalisée + réglages. */}
+        {/* Salutation personnalisée + bascule nuit / jour + réglages. */}
         <View style={styles.topBar}>
-          <View>
+          <View style={styles.greetingBlock}>
             <AppText variant="title">
               {greeting()}
               {userName ? `, ${userName}` : ''}.
@@ -174,22 +176,62 @@ export default function HomeScreen() {
               Jour {programDay} de ton programme.
             </AppText>
           </View>
-          <Pressable
-            onPress={() => router.push('/settings')}
-            hitSlop={10}
-            accessibilityLabel="Réglages"
-            style={styles.gear}
-          >
-            <Svg width={22} height={22} viewBox="0 0 24 24">
-              <Circle cx={12} cy={12} r={3.2} stroke={colors.textSecondary} strokeWidth={1.8} fill="none" />
-              <Path
-                d="M12 2.8v2.4M12 18.8v2.4M4.2 12H1.8M22.2 12h-2.4M5.4 5.4l1.7 1.7M16.9 16.9l1.7 1.7M18.6 5.4l-1.7 1.7M7.1 16.9l-1.7 1.7"
-                stroke={colors.textSecondary}
-                strokeWidth={1.8}
-                strokeLinecap="round"
-              />
-            </Svg>
-          </Pressable>
+
+          <View style={styles.topIcons}>
+            {/* Soleil (passer au clair) ou lune (revenir au sombre). */}
+            <Pressable
+              onPress={() => {
+                haptics.selection();
+                toggleMode();
+              }}
+              hitSlop={10}
+              accessibilityLabel={mode === 'nuit' ? 'Passer en mode jour' : 'Passer en mode nuit'}
+              style={styles.topIcon}
+            >
+              {mode === 'nuit' ? (
+                <Svg width={22} height={22} viewBox="0 0 24 24">
+                  <Circle cx={12} cy={12} r={4} stroke={colors.textSecondary} strokeWidth={1.8} fill="none" />
+                  <Path
+                    d="M12 2.8v2.4M12 18.8v2.4M4.2 12H1.8M22.2 12h-2.4M5.4 5.4l1.7 1.7M16.9 16.9l1.7 1.7M18.6 5.4l-1.7 1.7M7.1 16.9l-1.7 1.7"
+                    stroke={colors.textSecondary}
+                    strokeWidth={1.8}
+                    strokeLinecap="round"
+                  />
+                </Svg>
+              ) : (
+                <Svg width={22} height={22} viewBox="0 0 24 24">
+                  <Path
+                    d="M19.5 14.5A8 8 0 0 1 9.5 4.4a8 8 0 1 0 10 10.1Z"
+                    stroke={colors.textSecondary}
+                    strokeWidth={1.8}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    fill="none"
+                  />
+                </Svg>
+              )}
+            </Pressable>
+
+            {/* Réglages : trois curseurs, sans ambiguïté avec le soleil. */}
+            <Pressable
+              onPress={() => router.push('/settings')}
+              hitSlop={10}
+              accessibilityLabel="Réglages"
+              style={styles.topIcon}
+            >
+              <Svg width={22} height={22} viewBox="0 0 24 24">
+                <Path
+                  d="M4 7h9M17 7h3M4 12h3M11 12h9M4 17h9M17 17h3"
+                  stroke={colors.textSecondary}
+                  strokeWidth={1.8}
+                  strokeLinecap="round"
+                />
+                <Circle cx={15} cy={7} r={1.9} stroke={colors.textSecondary} strokeWidth={1.8} fill="none" />
+                <Circle cx={9} cy={12} r={1.9} stroke={colors.textSecondary} strokeWidth={1.8} fill="none" />
+                <Circle cx={15} cy={17} r={1.9} stroke={colors.textSecondary} strokeWidth={1.8} fill="none" />
+              </Svg>
+            </Pressable>
+          </View>
         </View>
 
         {/* La carte principale : semaine cochée + série + Détox Score. */}
@@ -361,7 +403,7 @@ export default function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   scroll: {
     paddingHorizontal: 24,
     paddingTop: spacing.xl,
@@ -373,7 +415,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-start',
   },
-  gear: { padding: spacing.sm, marginTop: spacing.xs },
+  greetingBlock: { flex: 1, paddingRight: spacing.md },
+  topIcons: { flexDirection: 'row', gap: spacing.xs, marginTop: spacing.xs },
+  topIcon: { padding: spacing.sm },
   pressed: { opacity: 0.85 },
 
   heroCard: {
@@ -458,4 +502,4 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.xl,
     paddingVertical: spacing.lg,
   },
-});
+}));

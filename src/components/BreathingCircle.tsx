@@ -8,7 +8,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { useReduceMotion } from '@/hooks/useReduceMotion';
-import { colors, motion, radii } from '@/theme';
+import { colors, motion, radii, themedStyles } from '@/theme';
 
 interface Props {
   size?: number;
@@ -64,7 +64,7 @@ export function BreathingCircle({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   circle: { alignItems: 'center', justifyContent: 'center' },
   content: { alignItems: 'center', justifyContent: 'center' },
-});
+}));

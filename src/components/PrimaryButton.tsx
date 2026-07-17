@@ -6,7 +6,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { AppText } from './AppText';
 import { haptics } from '@/lib/haptics';
-import { colors, radii, spacing } from '@/theme';
+import { colors, radii, spacing, themedStyles } from '@/theme';
 
 interface Props {
   label: string;
@@ -78,7 +78,7 @@ export function PrimaryButton({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   fullWidth: { width: '100%' },
   button: {
     minHeight: 56,
@@ -89,4 +89,4 @@ const styles = StyleSheet.create({
   },
   ghost: { minHeight: 44 },
   disabled: { opacity: 0.4 },
-});
+}));

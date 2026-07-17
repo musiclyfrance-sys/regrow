@@ -10,7 +10,7 @@ import Animated, {
 import { AppText, PrimaryButton, ScreenContainer } from '@/components';
 import { track } from '@/lib/analytics';
 import { haptics } from '@/lib/haptics';
-import { colors, radii, spacing } from '@/theme';
+import { colors, radii, spacing, themedStyles } from '@/theme';
 import {
   selectDaysLeft,
   selectVaultStatus,
@@ -257,7 +257,7 @@ function HoldToUnlock({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   scroll: { paddingHorizontal: 24, paddingTop: spacing.huge, paddingBottom: spacing.huge, gap: spacing.lg },
   centerContent: { gap: spacing.lg, paddingHorizontal: spacing.sm, alignItems: 'center' },
   bottomBar: { position: 'absolute', bottom: spacing.xl, left: 24, right: 24, gap: spacing.md },
@@ -289,4 +289,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: spacing.xl,
   },
-});
+}));

@@ -8,7 +8,7 @@ import Animated, {
 import { AppText } from './AppText';
 import { haptics } from '@/lib/haptics';
 import { useReduceMotion } from '@/hooks/useReduceMotion';
-import { colors, radii, spacing } from '@/theme';
+import { colors, radii, spacing, themedStyles } from '@/theme';
 
 interface Props {
   value: number | null;
@@ -87,7 +87,7 @@ function Dot({ active, current }: { active: boolean; current: boolean }) {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   container: { gap: spacing.md },
   row: {
     flexDirection: 'row',
@@ -106,4 +106,4 @@ const styles = StyleSheet.create({
   dotActive: { backgroundColor: colors.primarySoft },
   dotCurrent: { borderColor: colors.textPrimary },
   labels: { flexDirection: 'row', justifyContent: 'space-between' },
-});
+}));

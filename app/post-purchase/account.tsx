@@ -2,7 +2,7 @@ import { Platform, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { AppText, PrimaryButton, ScreenContainer } from '@/components';
-import { colors, radii, spacing } from '@/theme';
+import { colors, radii, spacing, themedStyles } from '@/theme';
 import { useAppStore } from '@/state/appStore';
 
 /**
@@ -60,9 +60,9 @@ export default function AccountScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   content: { gap: spacing.md, paddingHorizontal: spacing.sm },
   body: {},
   actions: { position: 'absolute', bottom: spacing.huge, left: 24, right: 24, gap: spacing.md },
   appleButton: { height: 56, width: '100%' },
-});
+}));

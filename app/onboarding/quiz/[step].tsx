@@ -38,7 +38,7 @@ import {
 import { QUIZ } from '@/config/quiz';
 import { PHASE_LABELS, QuestionStep } from '@/config/quizTypes';
 import { track } from '@/lib/analytics';
-import { colors, fonts, motion, radii, spacing } from '@/theme';
+import { colors, fonts, motion, radii, spacing, themedStyles } from '@/theme';
 import {
   AnswerValue,
   resolveText,
@@ -461,7 +461,7 @@ function InterludeView({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   flex: { flex: 1 },
   header: {
     flexDirection: 'row',
@@ -506,4 +506,4 @@ const styles = StyleSheet.create({
     left: 24,
     right: 24,
   },
-});
+}));

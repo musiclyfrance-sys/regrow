@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Share, StyleSheet, View } from 'react-native';
 import { captureRef } from 'react-native-view-shot';
 import { ShareCard, ShareCardVariant } from './ShareCard';
+import { themedStyles } from '@/theme';
 
 interface Props {
   variant: ShareCardVariant;
@@ -51,7 +52,7 @@ export function ShareCardSheet({ variant, value, date, onDone }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   // Hors écran mais RENDU (opacity 0 casserait la capture sur certains iOS).
   offscreen: { position: 'absolute', left: -9999, top: 0 },
-});
+}));

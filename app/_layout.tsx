@@ -5,7 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { colors, useAppFonts } from '@/theme';
+import { colors, useAppFonts, useThemeStore } from '@/theme';
 import { ErrorBoundary } from '@/components';
 import { initAnalytics, track } from '@/lib/analytics';
 import { listenNotificationOpens } from '@/lib/notifications';
@@ -15,6 +15,8 @@ SplashScreen.preventAutoHideAsync().catch(() => {});
 
 export default function RootLayout() {
   const fontsLoaded = useAppFonts();
+  // Bascule nuit / jour : la clé force un redessin complet avec la palette.
+  const mode = useThemeStore((s) => s.mode);
 
   useEffect(() => {
     // Session anonyme dès le lancement (aucun compte demandé) + analytics.
@@ -36,10 +38,10 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.background }}>
+    <GestureHandlerRootView key={mode} style={{ flex: 1, backgroundColor: colors.background }}>
       <SafeAreaProvider>
         <ErrorBoundary>
-        <StatusBar style="light" />
+        <StatusBar style={mode === 'nuit' ? 'light' : 'dark'} />
         <Stack
           screenOptions={{
             headerShown: false,

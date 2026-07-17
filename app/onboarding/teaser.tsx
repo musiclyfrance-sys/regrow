@@ -11,7 +11,7 @@ import {
   ScreenContainer,
 } from '@/components';
 import { track } from '@/lib/analytics';
-import { colors, radii, spacing } from '@/theme';
+import { colors, radii, spacing, themedStyles } from '@/theme';
 import { selectExName, useQuizStore } from '@/state/quizStore';
 import { useAppStore } from '@/state/appStore';
 
@@ -219,7 +219,7 @@ function FeatureIcon({ name }: { name: 'checkin' | 'shield' | 'lock' | 'flame' }
   }
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   container: { flex: 1 },
   scrollArea: { flex: 1 },
   scroll: { paddingHorizontal: 24, paddingTop: spacing.xl, paddingBottom: spacing.lg, gap: spacing.xl },
@@ -271,4 +271,4 @@ const styles = StyleSheet.create({
     borderRadius: radii.card,
     padding: spacing.lg,
   },
-});
+}));

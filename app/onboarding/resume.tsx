@@ -8,7 +8,7 @@ import {
 } from '@/components';
 import { QUIZ } from '@/config/quiz';
 import { PHASE_LABELS } from '@/config/quizTypes';
-import { colors, spacing } from '@/theme';
+import { colors, spacing, themedStyles } from '@/theme';
 import { useQuizStore } from '@/state/quizStore';
 
 /**
@@ -57,8 +57,8 @@ export default function ResumeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   content: { gap: spacing.lg, paddingHorizontal: spacing.sm, width: '100%' },
   progress: { marginTop: spacing.md },
   action: { position: 'absolute', bottom: spacing.huge, left: 24, right: 24 },
-});
+}));

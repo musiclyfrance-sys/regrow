@@ -8,7 +8,7 @@ import { QUOTES } from '@/config/library';
 import { track } from '@/lib/analytics';
 import { haptics } from '@/lib/haptics';
 import { useJournalStore } from '@/state/journalStore';
-import { colors, radii, spacing, tints } from '@/theme';
+import { colors, radii, spacing, tints, themedStyles } from '@/theme';
 
 /**
  * Citations — une phrase à la fois, celle du jour d'abord.
@@ -68,7 +68,7 @@ export default function QuotesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   iconWrap: { position: 'absolute', top: spacing.huge + spacing.xl },
   iconCircle: {
     width: 56,
@@ -85,4 +85,4 @@ const styles = StyleSheet.create({
     right: 24,
     gap: spacing.md,
   },
-});
+}));

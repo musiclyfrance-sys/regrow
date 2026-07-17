@@ -10,7 +10,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { BreathingCircle } from './BreathingCircle';
 import { useReduceMotion } from '@/hooks/useReduceMotion';
-import { colors } from '@/theme';
+import { colors, themedStyles } from '@/theme';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -82,6 +82,6 @@ export function ScoreRing({ score, size = 176, children }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   inner: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-});
+}));

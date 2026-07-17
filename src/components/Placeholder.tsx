@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import { AppText } from './AppText';
 import { ScreenContainer } from './ScreenContainer';
-import { colors, spacing } from '@/theme';
+import { colors, spacing, themedStyles } from '@/theme';
 
 /**
  * Écran « prochainement » — placeholder honnête pour les features des lots
@@ -25,7 +25,7 @@ export function Placeholder({ title, subtitle }: { title: string; subtitle: stri
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   content: { gap: spacing.md, paddingHorizontal: spacing.lg },
   tag: { marginTop: spacing.lg, letterSpacing: 0.5 },
-});
+}));

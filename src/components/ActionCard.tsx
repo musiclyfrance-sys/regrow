@@ -7,7 +7,7 @@ import Animated, {
 import Svg, { Path } from 'react-native-svg';
 import { AppText } from './AppText';
 import { haptics } from '@/lib/haptics';
-import { colors, radii, spacing } from '@/theme';
+import { colors, radii, spacing, themedStyles } from '@/theme';
 
 interface Props {
   /** Étiquette du dessus (« CHECK-IN DU SOIR »). */
@@ -95,7 +95,7 @@ export function ActionCard({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   card: {
     backgroundColor: colors.surface,
     borderRadius: radii.card,
@@ -111,4 +111,4 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     marginTop: spacing.xs,
   },
-});
+}));

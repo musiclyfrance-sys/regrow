@@ -9,7 +9,7 @@ import {
 } from '@/components';
 import { challengeOfDay, MILESTONE_DAYS, PHASES } from '@/config/challenges';
 import { haptics } from '@/lib/haptics';
-import { colors, fonts, radii, spacing } from '@/theme';
+import { colors, fonts, radii, spacing, themedStyles } from '@/theme';
 import { resolveText, selectExName, useQuizStore } from '@/state/quizStore';
 import {
   selectProgramDay,
@@ -160,7 +160,7 @@ export default function JourneyScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   scroll: {
     paddingHorizontal: 24,
     paddingTop: spacing.xl,
@@ -223,4 +223,4 @@ const styles = StyleSheet.create({
     borderRadius: radii.pill,
     backgroundColor: colors.accentWarm,
   },
-});
+}));

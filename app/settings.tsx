@@ -11,7 +11,7 @@ import {
 import { AppText, PrimaryButton, ScreenContainer } from '@/components';
 import { restore } from '@/lib/purchases';
 import { track } from '@/lib/analytics';
-import { colors, radii, spacing } from '@/theme';
+import { colors, radii, spacing, themedStyles } from '@/theme';
 import { useAppStore } from '@/state/appStore';
 
 /**
@@ -124,7 +124,7 @@ function Row({ label, onPress, danger }: { label: string; onPress: () => void; d
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   scroll: { paddingHorizontal: 24, paddingTop: spacing.xl, paddingBottom: spacing.huge, gap: spacing.xs },
   title: { marginBottom: spacing.lg },
   row: { paddingVertical: spacing.lg, borderBottomWidth: 1, borderBottomColor: colors.border },
@@ -146,4 +146,4 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   callRow: {},
-});
+}));

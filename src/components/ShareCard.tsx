@@ -2,7 +2,12 @@ import { forwardRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AppText } from './AppText';
-import { colors, fonts, gradients, radii, spacing } from '@/theme';
+import { fonts, palettes, radii, spacing } from '@/theme';
+
+// Les cartes à partager gardent TOUJOURS la marque nuit, quel que soit le mode :
+// c'est l'image publique de Regrow sur les réseaux.
+const colors = palettes.nuit.colors;
+const gradients = palettes.nuit.gradients;
 
 /**
  * Cartes partageables — capturées en image 1080×1920 (format story).

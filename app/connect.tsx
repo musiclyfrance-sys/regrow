@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { AppText, PrimaryButton, ScreenContainer } from '@/components';
 import { restore } from '@/lib/purchases';
-import { colors, radii, spacing } from '@/theme';
+import { colors, radii, spacing, themedStyles } from '@/theme';
 import { useAppStore } from '@/state/appStore';
 
 /**
@@ -83,7 +83,7 @@ export default function ConnectScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   content: { gap: spacing.md, paddingHorizontal: spacing.sm },
   actions: {
     position: 'absolute',
@@ -93,4 +93,4 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   appleButton: { height: 56, width: '100%' },
-});
+}));

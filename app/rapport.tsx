@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import Svg, { Path } from 'react-native-svg';
 import { AppText, ReportPager, ScreenContainer } from '@/components';
-import { colors, spacing } from '@/theme';
+import { colors, spacing, themedStyles } from '@/theme';
 import { selectExName, useQuizStore } from '@/state/quizStore';
 import { useAppStore } from '@/state/appStore';
 
@@ -55,7 +55,7 @@ export default function RapportScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   topBar: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -66,4 +66,4 @@ const styles = StyleSheet.create({
   backBtn: { padding: spacing.sm, width: 38 },
   topLabel: { letterSpacing: 1.4 },
   empty: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24 },
-});
+}));

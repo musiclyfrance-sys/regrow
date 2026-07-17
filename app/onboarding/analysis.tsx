@@ -5,7 +5,7 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { AppText, BreathingCircle, ScreenContainer } from '@/components';
 import { generateAutopsy } from '@/lib/ai';
 import { haptics } from '@/lib/haptics';
-import { colors, motion, spacing } from '@/theme';
+import { colors, motion, spacing, themedStyles } from '@/theme';
 import { selectExName, useQuizStore } from '@/state/quizStore';
 import { useAppStore } from '@/state/appStore';
 
@@ -106,7 +106,7 @@ export default function AnalysisScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   messageWrap: {
     position: 'absolute',
     bottom: spacing.huge * 2,
@@ -116,4 +116,4 @@ const styles = StyleSheet.create({
     gap: spacing.lg,
   },
   slow: { marginTop: spacing.md },
-});
+}));

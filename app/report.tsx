@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as Notifications from 'expo-notifications';
 import { AppText, PrimaryButton, ReportPager, ScreenContainer } from '@/components';
-import { colors, spacing } from '@/theme';
+import { colors, spacing, themedStyles } from '@/theme';
 import { selectExName, useQuizStore } from '@/state/quizStore';
 import { useAppStore } from '@/state/appStore';
 
@@ -78,7 +78,7 @@ export default function ReportScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   notifContent: { gap: spacing.md, paddingHorizontal: spacing.sm },
   notifActions: {
     position: 'absolute',
@@ -87,4 +87,4 @@ const styles = StyleSheet.create({
     right: 24,
     gap: spacing.md,
   },
-});
+}));

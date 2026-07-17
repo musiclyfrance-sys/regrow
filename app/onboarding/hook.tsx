@@ -5,7 +5,7 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 import { AppText, FadeInWords, PrimaryButton, ScreenContainer } from '@/components';
 import { track } from '@/lib/analytics';
 import { useQuizStore } from '@/state/quizStore';
-import { colors, spacing } from '@/theme';
+import { colors, spacing, themedStyles } from '@/theme';
 
 /**
  * Écran Hook — la première seconde de l'app.
@@ -54,7 +54,7 @@ export default function HookScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   phrase: { paddingHorizontal: spacing.md },
   ctaBlock: {
     position: 'absolute',
@@ -63,4 +63,4 @@ const styles = StyleSheet.create({
     gap: spacing.lg,
   },
   reassurance: { letterSpacing: 0.3 },
-});
+}));

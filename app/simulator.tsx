@@ -22,7 +22,7 @@ import {
   useSimulatorQuota,
   WEEKLY_QUOTA,
 } from '@/lib/simulator';
-import { colors, fonts, radii, spacing } from '@/theme';
+import { colors, fonts, radii, spacing, themedStyles } from '@/theme';
 import { selectExName, useQuizStore } from '@/state/quizStore';
 import { selectStreakDays, useStreakStore } from '@/state/streakStore';
 
@@ -289,7 +289,7 @@ export default function SimulatorScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   flex: { flex: 1 },
   centerContent: { gap: spacing.lg, paddingHorizontal: spacing.sm, width: '100%' },
   gateLabel: { letterSpacing: 2 },
@@ -362,4 +362,4 @@ const styles = StyleSheet.create({
     lineHeight: 62,
     color: colors.accentWarm,
   },
-});
+}));

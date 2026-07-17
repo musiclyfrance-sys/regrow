@@ -12,7 +12,7 @@ import { BREATH_DURATIONS_MIN, BREATH_PATTERNS, BreathPattern } from '@/config/l
 import { useReduceMotion } from '@/hooks/useReduceMotion';
 import { track } from '@/lib/analytics';
 import { haptics } from '@/lib/haptics';
-import { colors, radii, spacing, tints } from '@/theme';
+import { colors, radii, spacing, tints, themedStyles } from '@/theme';
 
 /**
  * Respiration guidée — un cercle qui respire avec toi.
@@ -214,7 +214,7 @@ function BreathSession({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   header: { gap: spacing.xs, marginTop: spacing.xl },
   pressed: { opacity: 0.85 },
   patternList: { gap: spacing.md, marginTop: spacing.xxl },
@@ -261,4 +261,4 @@ const styles = StyleSheet.create({
     right: 24,
     gap: spacing.md,
   },
-});
+}));

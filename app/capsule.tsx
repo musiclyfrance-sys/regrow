@@ -11,7 +11,7 @@ import {
 } from '@/components';
 import { track } from '@/lib/analytics';
 import { haptics } from '@/lib/haptics';
-import { colors, fonts, radii, spacing } from '@/theme';
+import { colors, fonts, radii, spacing, themedStyles } from '@/theme';
 import { useAppStore } from '@/state/appStore';
 import {
   selectReadyCapsule,
@@ -230,7 +230,7 @@ export default function CapsuleScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   center: { alignItems: 'center', gap: spacing.lg, paddingHorizontal: spacing.sm },
   label: { letterSpacing: 2 },
   bottom: { position: 'absolute', bottom: spacing.xl, left: 24, right: 24, gap: spacing.md },
@@ -250,4 +250,4 @@ const styles = StyleSheet.create({
     borderLeftWidth: 3,
     borderLeftColor: colors.primary,
   },
-});
+}));
