@@ -407,6 +407,9 @@ const styles = StyleSheet.create({
     fontSize: 56,
     lineHeight: 62,
     color: colors.accentWarm,
+    // Largeur bornée : sur le web, un champ texte prend sinon une largeur
+    // par défaut énorme qui pousse l'anneau hors de l'écran.
+    width: 140,
   },
   gaugeScore: {
     fontFamily: fonts.serifSemibold,
@@ -414,6 +417,7 @@ const styles = StyleSheet.create({
     lineHeight: 34,
     color: colors.textPrimary,
     textAlign: 'center',
+    width: 72,
   },
 
   section: { gap: spacing.md },

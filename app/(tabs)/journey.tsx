@@ -175,6 +175,9 @@ const styles = StyleSheet.create({
     fontSize: 44,
     lineHeight: 50,
     color: colors.accentWarm,
+    // Largeur bornée : champ texte web, sinon « / 90 » est poussé hors écran.
+    width: 60,
+    textAlign: 'center',
   },
   section: { gap: spacing.md },
   milestoneGrid: {

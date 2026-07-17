@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { TextInput, TextStyle } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Platform, Text, TextInput, TextStyle } from 'react-native';
 import Animated, {
   Easing,
   useAnimatedProps,
@@ -24,6 +24,42 @@ interface Props {
  * Affichage immédiat si « Réduire les animations » est actif.
  */
 export function CountUpText({ value, durationMs = 900, style, suffix = '' }: Props) {
+  // Sur le web (démo), la mise à jour du champ animé n'est pas fiable :
+  // on anime le chiffre côté JS, même rendu, fiabilité garantie.
+  if (Platform.OS === 'web') {
+    return <WebCountUp value={value} durationMs={durationMs} style={style} suffix={suffix} />;
+  }
+  return <NativeCountUp value={value} durationMs={durationMs} style={style} suffix={suffix} />;
+}
+
+function WebCountUp({ value, durationMs = 900, style, suffix = '' }: Props) {
+  const reduce = useReduceMotion();
+  const [shown, setShown] = useState(reduce ? value : 0);
+
+  useEffect(() => {
+    if (reduce) {
+      setShown(value);
+      return;
+    }
+    const start = Date.now();
+    const t = setInterval(() => {
+      const p = Math.min(1, (Date.now() - start) / durationMs);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setShown(Math.round(value * eased));
+      if (p >= 1) clearInterval(t);
+    }, 40);
+    return () => clearInterval(t);
+  }, [value, durationMs, reduce]);
+
+  return (
+    <Text style={style} accessibilityLabel={`${value}${suffix}`}>
+      {shown}
+      {suffix}
+    </Text>
+  );
+}
+
+function NativeCountUp({ value, durationMs = 900, style, suffix = '' }: Props) {
   const reduce = useReduceMotion();
   const progress = useSharedValue(0);
 
