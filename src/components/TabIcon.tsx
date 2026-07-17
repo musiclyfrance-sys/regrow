@@ -1,6 +1,6 @@
 import Svg, { Circle, Path, Polyline, Rect } from 'react-native-svg';
 
-export type TabIconName = 'today' | 'journey' | 'report' | 'progress' | 'vault';
+export type TabIconName = 'today' | 'journey' | 'library' | 'report' | 'progress' | 'vault';
 
 /**
  * Icônes vectorielles fines des onglets (jamais d'emoji en UI).
@@ -22,6 +22,13 @@ export function TabIcon({ name, color }: { name: TabIconName; color: string }) {
         <Svg width={22} height={22} viewBox="0 0 24 24">
           <Path d="M6 21V4" {...stroke} {...round} />
           <Path d="M6 5h11l-2.5 4L17 13H6" {...stroke} {...round} />
+        </Svg>
+      );
+    case 'library': // livre ouvert
+      return (
+        <Svg width={22} height={22} viewBox="0 0 24 24">
+          <Path d="M12 6.5C10.5 5 8.5 4.3 5.8 4.3c-.9 0-1.8.1-2.3.2v14c.5-.1 1.4-.2 2.3-.2 2.7 0 4.7.7 6.2 2.2 1.5-1.5 3.5-2.2 6.2-2.2.9 0 1.8.1 2.3.2v-14c-.5-.1-1.4-.2-2.3-.2-2.7 0-4.7.7-6.2 2.2Z" {...stroke} {...round} />
+          <Path d="M12 6.5v14" {...stroke} {...round} />
         </Svg>
       );
     case 'report': // document

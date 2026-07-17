@@ -54,7 +54,17 @@ export type AnalyticsEvent =
   | 'capsule_recorded'
   | 'capsule_played'
   // Réglages
-  | 'settings_delete_account';
+  | 'settings_delete_account'
+  // Bibliothèque (jamais de contenu, uniquement l'usage).
+  | 'breath_started'
+  | 'breath_completed'
+  | 'meditation_started'
+  | 'meditation_completed'
+  | 'quote_next'
+  | 'quote_saved'
+  | 'journal_entry_added'
+  | 'article_closed'
+  | 'sound_played';
 
 type Props = Record<string, string | number | boolean | undefined>;
 

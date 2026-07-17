@@ -44,6 +44,17 @@ export const colors = {
   scrim: 'rgba(19, 16, 25, 0.72)',
 } as const;
 
+/**
+ * Teintes translucides — fonds des pastilles et blocs de la Bibliothèque.
+ * Toujours associées à leur couleur pleine (lavande, pêche, sauge, crème).
+ */
+export const tints = {
+  lavender: 'rgba(167, 139, 250, 0.16)',
+  peach: 'rgba(244, 169, 140, 0.16)',
+  sage: 'rgba(157, 196, 168, 0.16)',
+  cream: 'rgba(245, 241, 232, 0.08)',
+} as const;
+
 /** Dégradé ember — RÉSERVÉ à la cérémonie de crémation. */
 export const gradients = {
   ember: ['#F4A98C', '#E05E3F'] as const,
@@ -65,11 +76,15 @@ export const fonts = {
   sansSemibold: 'GeneralSans-Semibold',
 } as const;
 
-/** Échelle typographique : 32/26/20/17/15/13, interlignage généreux (≥1.4 sur les corps). */
+/**
+ * Échelle typographique : 32/26/18/17/15/13, interlignage généreux (≥1.4 sur
+ * les corps). Doyle est réservée aux grands titres (display, title) ; les
+ * petits titres passent en General Sans Semibold pour une lecture nette.
+ */
 export const type = {
   display: { fontFamily: fonts.serifSemibold, fontSize: 32, lineHeight: 40 },
   title: { fontFamily: fonts.serifSemibold, fontSize: 26, lineHeight: 34 },
-  heading: { fontFamily: fonts.serifMedium, fontSize: 20, lineHeight: 28 },
+  heading: { fontFamily: fonts.sansSemibold, fontSize: 18, lineHeight: 26 },
   bodyLarge: { fontFamily: fonts.sansRegular, fontSize: 17, lineHeight: 25 },
   body: { fontFamily: fonts.sansRegular, fontSize: 15, lineHeight: 23 },
   caption: { fontFamily: fonts.sansMedium, fontSize: 13, lineHeight: 19 },
@@ -134,6 +149,7 @@ export type SpacingToken = keyof typeof spacing;
 
 export const theme = {
   colors,
+  tints,
   gradients,
   fonts,
   type,

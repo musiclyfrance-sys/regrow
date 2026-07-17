@@ -67,6 +67,13 @@ export default function RootLayout() {
             options={{ presentation: 'fullScreenModal', animation: 'fade' }}
           />
           <Stack.Screen name="settings" options={{ presentation: 'card' }} />
+          <Stack.Screen name="rapport" options={{ animation: 'slide_from_right' }} />
+          <Stack.Screen name="breathe" options={{ presentation: 'fullScreenModal', animation: 'fade' }} />
+          <Stack.Screen name="meditate" options={{ presentation: 'fullScreenModal', animation: 'fade' }} />
+          <Stack.Screen name="quotes" options={{ animation: 'slide_from_right' }} />
+          <Stack.Screen name="journal" options={{ animation: 'slide_from_right' }} />
+          <Stack.Screen name="sounds" options={{ animation: 'slide_from_right' }} />
+          <Stack.Screen name="article/[id]" options={{ animation: 'slide_from_right' }} />
           <Stack.Screen
             name="ressources"
             options={{ presentation: 'fullScreenModal', animation: 'fade' }}

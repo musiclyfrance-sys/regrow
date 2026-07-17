@@ -3,9 +3,10 @@ import { TabIcon } from '@/components';
 import { colors, spacing } from '@/theme';
 
 /**
- * Les 5 onglets : Aujourd'hui (rituel) · Parcours (90 jours) · Rapport
- * (relire l'autopsie) · Progrès (courbe et stats) · Coffre.
- * Panic, check-in, simulateur, capsule et réglages sont des modales.
+ * Les 5 onglets : Aujourd'hui (rituel) · Parcours (90 jours) · Bibliothèque
+ * (contenus doux) · Progrès (courbe et stats) · Coffre.
+ * Le rapport se rouvre depuis l'accueil et le parcours. Panic, check-in,
+ * simulateur, capsule et réglages sont des modales.
  */
 export default function TabsLayout() {
   return (
@@ -38,10 +39,10 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="rapport"
+        name="library"
         options={{
-          title: 'Rapport',
-          tabBarIcon: ({ color }) => <TabIcon name="report" color={color} />,
+          title: 'Bibliothèque',
+          tabBarIcon: ({ color }) => <TabIcon name="library" color={color} />,
         }}
       />
       <Tabs.Screen

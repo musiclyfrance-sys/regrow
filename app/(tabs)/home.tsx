@@ -7,15 +7,17 @@ import {
   ActionCard,
   AppText,
   CountUpText,
+  LibraryIcon,
   ScoreRing,
   ScreenContainer,
   ShareCardSheet,
 } from '@/components';
+import type { LibraryIconName } from '@/components/LibraryIcon';
 import { challengeOfDay, MILESTONE_DAYS } from '@/config/challenges';
 import { track } from '@/lib/analytics';
 import { haptics } from '@/lib/haptics';
 import { armNotifications } from '@/lib/notifications';
-import { colors, fonts, radii, spacing } from '@/theme';
+import { colors, fonts, radii, spacing, tints } from '@/theme';
 import { useAppStore } from '@/state/appStore';
 import { useCapsuleStore } from '@/state/capsuleStore';
 import { resolveText, selectExName, useQuizStore } from '@/state/quizStore';
@@ -36,10 +38,84 @@ function greeting(): string {
   return 'Toujours debout';
 }
 
+const DAY_LABELS = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+
+interface WeekDay {
+  label: string;
+  /** Jour déjà tenu (dans la série sans contact). */
+  held: boolean;
+  isToday: boolean;
+  isFuture: boolean;
+}
+
+/** La semaine en cours, lundi en tête, avec les jours tenus cochés. */
+function computeWeek(streakDays: number): WeekDay[] {
+  const today = new Date();
+  const todayIdx = (today.getDay() + 6) % 7; // Lundi = 0.
+  return DAY_LABELS.map((label, i) => {
+    const diff = todayIdx - i; // Jours d'écart avec aujourd'hui (positif = passé).
+    return {
+      label,
+      isToday: i === todayIdx,
+      isFuture: diff < 0,
+      held: diff >= 0 && diff < streakDays,
+    };
+  });
+}
+
+function CheckMark({ color }: { color: string }) {
+  return (
+    <Svg width={14} height={14} viewBox="0 0 24 24">
+      <Path
+        d="m5 12.5 4.5 4.5L19 7.5"
+        stroke={color}
+        strokeWidth={2.6}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+    </Svg>
+  );
+}
+
+/** Petit raccourci rond vers un outil de la Bibliothèque. */
+function ToolTile({
+  icon,
+  label,
+  tint,
+  color,
+  onPress,
+}: {
+  icon: LibraryIconName;
+  label: string;
+  tint: string;
+  color: string;
+  onPress: () => void;
+}) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      onPress={() => {
+        haptics.selection();
+        onPress();
+      }}
+      style={({ pressed }) => [styles.toolTile, pressed && styles.pressed]}
+    >
+      <View style={[styles.toolCircle, { backgroundColor: tint }]}>
+        <LibraryIcon name={icon} color={color} size={22} />
+      </View>
+      <AppText variant="caption" color={colors.textSecondary}>
+        {label}
+      </AppText>
+    </Pressable>
+  );
+}
+
 /**
- * Home — le rituel quotidien. Salutation personnalisée, streak qui roule,
- * anneau Détox Score, les 2 actions du jour (check-in, défi) en cartes
- * clairement cliquables, panic button flottant.
+ * Home — le rituel quotidien, en blocs clairs : semaine cochée, série et
+ * Détox Score réunis, actions du soir, raccourcis vers les outils doux,
+ * retour à l'autopsie, panic button flottant.
  */
 export default function HomeScreen() {
   const router = useRouter();
@@ -63,6 +139,7 @@ export default function HomeScreen() {
   const programDay = selectProgramDay(startDate);
   const challengeDone = selectTodayChallengeDone(challengeDoneDates);
   const { challenge } = challengeOfDay(programDay);
+  const week = computeWeek(streakDays);
 
   const reachedMilestone = MILESTONE_DAYS.includes(streakDays) ? streakDays : null;
   const [sharingMilestone, setSharingMilestone] = useState<number | null>(null);
@@ -115,23 +192,47 @@ export default function HomeScreen() {
           </Pressable>
         </View>
 
-        {/* Streak — le chiffre roule jusqu'au total. */}
-        <Animated.View entering={FadeInUp.duration(500)} style={styles.streakBlock}>
-          <CountUpText value={streakDays} style={styles.streakNumber} />
-          <AppText variant="body" color={colors.textSecondary}>
-            {streakDays > 1 ? 'jours' : 'jour'} sans contact
-          </AppText>
-        </Animated.View>
+        {/* La carte principale : semaine cochée + série + Détox Score. */}
+        <Animated.View entering={FadeInUp.duration(500)} style={styles.heroCard}>
+          <View style={styles.weekRow}>
+            {week.map((d, i) => (
+              <View key={i} style={styles.weekDay}>
+                <View
+                  style={[
+                    styles.weekCircle,
+                    d.held && styles.weekCircleHeld,
+                    d.isToday && styles.weekCircleToday,
+                  ]}
+                >
+                  {d.held ? <CheckMark color={colors.background} /> : null}
+                </View>
+                <AppText
+                  variant="caption"
+                  color={d.isToday ? colors.textPrimary : colors.textSecondary}
+                >
+                  {d.label}
+                </AppText>
+              </View>
+            ))}
+          </View>
 
-        {/* Détox Score : anneau pêche + jauge qui respire. */}
-        <View style={styles.gaugeBlock}>
-          <ScoreRing score={detoxScore}>
-            <CountUpText value={detoxScore} durationMs={1100} style={styles.gaugeScore} />
-            <AppText variant="caption" color={colors.textSecondary}>
-              Détox Score
-            </AppText>
-          </ScoreRing>
-        </View>
+          <View style={styles.heroDivider} />
+
+          <View style={styles.heroRow}>
+            <View style={styles.heroLeft}>
+              <CountUpText value={streakDays} style={styles.streakNumber} />
+              <AppText variant="body" color={colors.textSecondary}>
+                {streakDays > 1 ? 'jours' : 'jour'} sans contact
+              </AppText>
+            </View>
+            <ScoreRing score={detoxScore} size={108}>
+              <CountUpText value={detoxScore} durationMs={1100} style={styles.gaugeScore} />
+              <AppText variant="caption" color={colors.textSecondary}>
+                Détox
+              </AppText>
+            </ScoreRing>
+          </View>
+        </Animated.View>
 
         {/* Milestone du jour : la carte à partager. */}
         {reachedMilestone != null && (
@@ -144,27 +245,94 @@ export default function HomeScreen() {
           />
         )}
 
-        {/* Les 2 actions du jour — clairement cliquables. */}
-        <ActionCard
-          eyebrow="CHECK-IN DU SOIR"
-          eyebrowColor={colors.primarySoft}
-          title="Comment tu vas, vraiment ?"
-          cta="Commencer · 2 min"
-          done={!!todayCheckin}
-          doneLabel="Fait ✓ · à demain soir"
-          accentColor={colors.primary}
-          onPress={() => router.push('/checkin')}
-        />
+        {/* Les 2 actions du soir. */}
+        <View style={styles.section}>
+          <AppText variant="heading">Ce soir</AppText>
+          <ActionCard
+            eyebrow="CHECK-IN DU SOIR"
+            eyebrowColor={colors.primarySoft}
+            title="Comment tu vas, vraiment ?"
+            cta="Commencer · 2 min"
+            done={!!todayCheckin}
+            doneLabel="Fait ✓ · à demain soir"
+            accentColor={colors.primary}
+            onPress={() => router.push('/checkin')}
+          />
+          <ActionCard
+            eyebrow="DÉFI DU JOUR"
+            title={resolveText(challenge.text, ex)}
+            cta="Relever le défi"
+            done={challengeDone}
+            doneLabel="Fait ✓ · +3 au Détox Score"
+            accentColor={colors.accentWarm}
+            onPress={() => router.push('/(tabs)/journey')}
+          />
+        </View>
 
-        <ActionCard
-          eyebrow="DÉFI DU JOUR"
-          title={resolveText(challenge.text, ex)}
-          cta="Relever le défi"
-          done={challengeDone}
-          doneLabel="Fait ✓ · +3 au Détox Score"
-          accentColor={colors.accentWarm}
-          onPress={() => router.push('/(tabs)/journey')}
-        />
+        {/* Raccourcis vers les outils doux. */}
+        <View style={styles.section}>
+          <AppText variant="heading">Un moment pour toi</AppText>
+          <View style={styles.toolsRow}>
+            <ToolTile
+              icon="breath"
+              label="Respirer"
+              tint={tints.lavender}
+              color={colors.primarySoft}
+              onPress={() => router.push('/breathe')}
+            />
+            <ToolTile
+              icon="sound"
+              label="Sons"
+              tint={tints.sage}
+              color={colors.success}
+              onPress={() => router.push('/sounds')}
+            />
+            <ToolTile
+              icon="journal"
+              label="Journal"
+              tint={tints.lavender}
+              color={colors.primary}
+              onPress={() => router.push('/journal')}
+            />
+            <ToolTile
+              icon="quote"
+              label="Citations"
+              tint={tints.peach}
+              color={colors.accentWarm}
+              onPress={() => router.push('/quotes')}
+            />
+          </View>
+        </View>
+
+        {/* Relire l'autopsie. */}
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => {
+            haptics.selection();
+            router.push('/rapport');
+          }}
+          style={({ pressed }) => [styles.reportRow, pressed && styles.pressed]}
+        >
+          <View style={[styles.reportIcon, { backgroundColor: tints.peach }]}>
+            <LibraryIcon name="report" color={colors.accentWarm} size={20} />
+          </View>
+          <View style={styles.reportText}>
+            <AppText variant="bodyMedium">Relire ton autopsie</AppText>
+            <AppText variant="caption" color={colors.textSecondary}>
+              Pour les soirs où tu doutes de ta décision.
+            </AppText>
+          </View>
+          <Svg width={16} height={16} viewBox="0 0 24 24">
+            <Path
+              d="m9 5 7 7-7 7"
+              stroke={colors.textSecondary}
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+            />
+          </Svg>
+        </Pressable>
 
         <AppText variant="caption" color={colors.textSecondary} center style={styles.hint}>
           Tu penses à {ex} ? Le bouton en bas est là pour ça.
@@ -206,22 +374,76 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   gear: { padding: spacing.sm, marginTop: spacing.xs },
-  streakBlock: { alignItems: 'center', gap: spacing.xs, marginTop: spacing.sm },
+  pressed: { opacity: 0.85 },
+
+  heroCard: {
+    backgroundColor: colors.surface,
+    borderRadius: radii.card,
+    padding: spacing.xl,
+    gap: spacing.lg,
+  },
+  weekRow: { flexDirection: 'row', justifyContent: 'space-between' },
+  weekDay: { alignItems: 'center', gap: spacing.xs },
+  weekCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: radii.pill,
+    backgroundColor: colors.surfaceRaised,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  weekCircleHeld: { backgroundColor: colors.accentWarm },
+  weekCircleToday: { borderWidth: 2, borderColor: colors.primarySoft },
+  heroDivider: { height: 1, backgroundColor: colors.border },
+  heroRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.sm,
+  },
+  heroLeft: { gap: spacing.xs },
   streakNumber: {
     fontFamily: fonts.serifSemibold,
-    fontSize: 64,
-    lineHeight: 70,
+    fontSize: 56,
+    lineHeight: 62,
     color: colors.accentWarm,
-    textAlign: 'center',
   },
-  gaugeBlock: { alignItems: 'center' },
   gaugeScore: {
     fontFamily: fonts.serifSemibold,
-    fontSize: 40,
-    lineHeight: 46,
+    fontSize: 28,
+    lineHeight: 34,
     color: colors.textPrimary,
     textAlign: 'center',
   },
+
+  section: { gap: spacing.md },
+  toolsRow: { flexDirection: 'row', justifyContent: 'space-between' },
+  toolTile: { alignItems: 'center', gap: spacing.sm, width: 72 },
+  toolCircle: {
+    width: 54,
+    height: 54,
+    borderRadius: radii.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  reportRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    backgroundColor: colors.surface,
+    borderRadius: radii.card,
+    padding: spacing.lg,
+  },
+  reportIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: radii.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  reportText: { flex: 1, gap: 2 },
+
   hint: { marginTop: spacing.sm },
   panic: {
     position: 'absolute',
