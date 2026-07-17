@@ -53,13 +53,13 @@ export const gradients = {
 
 // ─── Typographie ─────────────────────────────────────────────────────────────
 /**
- * Gooper : titres et verdicts (côté éditorial / journal intime), graisses 500–600.
+ * Doyle : titres et verdicts (côté éditorial / journal intime).
  * General Sans : interface et corps, graisses 400–600.
  * Fichiers locaux dans assets/fonts (voir src/theme/useAppFonts.ts).
  */
 export const fonts = {
-  serifMedium: 'Gooper-Medium',
-  serifSemibold: 'Gooper-SemiBold',
+  serifMedium: 'Doyle-Medium',
+  serifSemibold: 'Doyle-Bold',
   sansRegular: 'GeneralSans-Regular',
   sansMedium: 'GeneralSans-Medium',
   sansSemibold: 'GeneralSans-Semibold',

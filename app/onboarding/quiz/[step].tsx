@@ -106,9 +106,13 @@ export default function QuizStepScreen() {
   }, [idx]);
 
   const goBack = useCallback(() => {
-    if (prevQuestionIdx == null) return;
     clearTimer();
     haptics.selection();
+    // Première question : retour à l'écran d'ouverture (jamais bloquée).
+    if (prevQuestionIdx == null) {
+      router.replace('/onboarding/hook');
+      return;
+    }
     goTo(prevQuestionIdx);
     router.replace({
       pathname: '/onboarding/quiz/[step]',
@@ -164,25 +168,23 @@ export default function QuizStepScreen() {
   return (
     <ScreenContainer edges={['top', 'bottom']}>
       <View style={styles.header}>
-        {prevQuestionIdx != null && (
-          <Pressable
-            onPress={goBack}
-            hitSlop={12}
-            accessibilityLabel="Question précédente"
-            style={styles.backBtn}
-          >
-            <Svg width={22} height={22} viewBox="0 0 24 24">
-              <Path
-                d="M14.5 5.5 8 12l6.5 6.5"
-                stroke={colors.textSecondary}
-                strokeWidth={2.2}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill="none"
-              />
-            </Svg>
-          </Pressable>
-        )}
+        <Pressable
+          onPress={goBack}
+          hitSlop={12}
+          accessibilityLabel="Question précédente"
+          style={styles.backBtn}
+        >
+          <Svg width={22} height={22} viewBox="0 0 24 24">
+            <Path
+              d="M14.5 5.5 8 12l6.5 6.5"
+              stroke={colors.textSecondary}
+              strokeWidth={2.2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+            />
+          </Svg>
+        </Pressable>
         <View style={styles.progressWrap}>
           <QuizProgress
             questionsDone={questionsBefore + 1}
