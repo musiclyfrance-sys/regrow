@@ -1,16 +1,28 @@
 import { StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { AppText, PrimaryButton, ScreenContainer } from '@/components';
+import {
+  AppText,
+  PrimaryButton,
+  QuizProgress,
+  ScreenContainer,
+} from '@/components';
+import { QUIZ } from '@/config/quiz';
+import { PHASE_LABELS } from '@/config/quizTypes';
 import { colors, spacing } from '@/theme';
 import { useQuizStore } from '@/state/quizStore';
 
 /**
- * Écran de reprise — l'utilisatrice retrouve son autopsie exactement où elle
- * l'avait laissée (tolérance réseau / fermeture d'app).
+ * Reprise — elle retrouve son autopsie EXACTEMENT où elle l'a laissée,
+ * avec sa progression visible. Aucune question à refaire.
  */
 export default function ResumeScreen() {
   const router = useRouter();
   const index = useQuizStore((s) => s.index);
+
+  const questionsDone = QUIZ.slice(0, index).filter((s) => s.kind === 'question').length;
+  const total = QUIZ.filter((s) => s.kind === 'question').length;
+  const current = QUIZ[Math.min(index, QUIZ.length - 1)];
+  const phaseLabel = current ? PHASE_LABELS[current.phase] : '';
 
   const resume = () =>
     router.replace({ pathname: '/onboarding/quiz/[step]', params: { step: String(index) } });
@@ -22,17 +34,22 @@ export default function ResumeScreen() {
           Ton autopsie t'attend là où tu l'as laissée.
         </AppText>
         <AppText variant="body" color={colors.textSecondary} center>
-          Rien n'est perdu. On reprend au bon endroit.
+          {questionsDone} réponse{questionsDone > 1 ? 's' : ''} déjà enregistrée
+          {questionsDone > 1 ? 's' : ''} sur {total}. Rien n'est perdu.
         </AppText>
+        <View style={styles.progress}>
+          <QuizProgress progress={questionsDone / total} phaseLabel={phaseLabel} />
+        </View>
       </View>
       <View style={styles.action}>
-        <PrimaryButton label="Reprendre" onPress={resume} />
+        <PrimaryButton label="Reprendre où j'en étais" onPress={resume} />
       </View>
     </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  content: { gap: spacing.md, paddingHorizontal: spacing.lg },
+  content: { gap: spacing.lg, paddingHorizontal: spacing.sm, width: '100%' },
+  progress: { marginTop: spacing.md },
   action: { position: 'absolute', bottom: spacing.huge, left: 24, right: 24 },
 });

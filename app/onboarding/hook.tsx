@@ -50,6 +50,12 @@ export default function HookScreen() {
           >
             8 minutes. Anonyme. Sans compte.
           </AppText>
+          <PrimaryButton
+            label="J'ai déjà un compte"
+            variant="ghost"
+            fullWidth={false}
+            onPress={() => router.push('/connect')}
+          />
         </Animated.View>
       )}
     </ScreenContainer>

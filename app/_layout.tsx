@@ -51,6 +51,7 @@ export default function RootLayout() {
           <Stack.Screen name="index" />
           <Stack.Screen name="onboarding" />
           <Stack.Screen name="paywall" options={{ animation: 'slide_from_bottom' }} />
+          <Stack.Screen name="connect" options={{ animation: 'slide_from_right' }} />
           <Stack.Screen name="post-purchase/account" options={{ animation: 'fade' }} />
           <Stack.Screen name="report" options={{ animation: 'fade' }} />
           <Stack.Screen name="(tabs)" />
