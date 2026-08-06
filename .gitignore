@@ -15,6 +15,10 @@ android/
 # Metro
 .metro-health-check*
 
+# Projet Expo vierge créé par erreur à la racine (piège de `create-expo-app`).
+# Le vrai code vit dans app/ et src/, jamais dans un sous-dossier regrow/.
+/regrow/
+
 # debug
 npm-debug.*
 yarn-debug.*
