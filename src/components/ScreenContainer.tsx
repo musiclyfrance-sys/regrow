@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
 import { SafeAreaView, Edge } from 'react-native-safe-area-context';
-import { colors, screenPadding } from '@/theme';
+import { colors, screenPadding, themedStyles } from '@/theme';
 
 interface Props {
   children: ReactNode;
@@ -38,8 +38,8 @@ export function ScreenContainer({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   root: { flex: 1 },
   inner: { flex: 1 },
   center: { justifyContent: 'center', alignItems: 'center' },
-});
+}));

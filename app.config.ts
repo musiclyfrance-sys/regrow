@@ -63,6 +63,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     posthogHost: process.env.EXPO_PUBLIC_POSTHOG_HOST ?? 'https://eu.i.posthog.com',
     // Mode mock : développe sans aucune clé (IA, achats, analytics simulés).
     mockMode: (process.env.EXPO_PUBLIC_MOCK_MODE ?? 'true') === 'true',
-    eas: { projectId: process.env.EAS_PROJECT_ID ?? '' },
+    // Projet EAS « regrow » créé sur expo.dev (compte yassirsab).
+    eas: {
+      projectId: process.env.EAS_PROJECT_ID ?? '116712fa-bc71-4289-9487-eb1f70198110',
+    },
   },
 });

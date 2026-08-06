@@ -1,8 +1,18 @@
-import { Alert, Linking, Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { AppText, ScreenContainer } from '@/components';
+import { useState } from 'react';
+import {
+  Alert,
+  Linking,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
+import { AppText, PrimaryButton, ScreenContainer } from '@/components';
 import { restore } from '@/lib/purchases';
 import { track } from '@/lib/analytics';
-import { colors, radii, spacing } from '@/theme';
+import { colors, radii, spacing, themedStyles } from '@/theme';
+import { useAppStore } from '@/state/appStore';
 
 /**
  * Réglages — résiliation, restauration, export/suppression RGPD, mentions
@@ -10,6 +20,11 @@ import { colors, radii, spacing } from '@/theme';
  * visibles ici (section 8).
  */
 export default function SettingsScreen() {
+  const userName = useAppStore((s) => s.userName);
+  const setUserName = useAppStore((s) => s.setUserName);
+  const [editingName, setEditingName] = useState(false);
+  const [nameDraft, setNameDraft] = useState(userName ?? '');
+
   const onRestore = async () => {
     const res = await restore();
     Alert.alert(
@@ -46,6 +61,36 @@ export default function SettingsScreen() {
           Réglages
         </AppText>
 
+        {/* Prénom (optionnel, local — jamais demandé avant l'achat). */}
+        {editingName ? (
+          <View style={styles.nameEdit}>
+            <TextInput
+              value={nameDraft}
+              onChangeText={setNameDraft}
+              placeholder="Ton prénom (ou un surnom)"
+              placeholderTextColor={colors.textSecondary}
+              maxLength={20}
+              autoFocus
+              style={styles.nameInput}
+            />
+            <PrimaryButton
+              label="Enregistrer"
+              onPress={() => {
+                setUserName(nameDraft);
+                setEditingName(false);
+              }}
+            />
+          </View>
+        ) : (
+          <Row
+            label={userName ? `Mon prénom : ${userName}` : 'Ajouter mon prénom (optionnel)'}
+            onPress={() => {
+              setNameDraft(userName ?? '');
+              setEditingName(true);
+            }}
+          />
+        )}
+
         <Row label="Restaurer mes achats" onPress={onRestore} />
         <Row label="Gérer mon abonnement" onPress={onManageSub} />
         <Row label="Exporter mes données" onPress={() => Alert.alert('Export', 'Bientôt disponible.')} />
@@ -79,10 +124,20 @@ function Row({ label, onPress, danger }: { label: string; onPress: () => void; d
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   scroll: { paddingHorizontal: 24, paddingTop: spacing.xl, paddingBottom: spacing.huge, gap: spacing.xs },
   title: { marginBottom: spacing.lg },
   row: { paddingVertical: spacing.lg, borderBottomWidth: 1, borderBottomColor: colors.border },
+  nameEdit: { gap: spacing.md, paddingVertical: spacing.md },
+  nameInput: {
+    minHeight: 52,
+    borderRadius: radii.card,
+    backgroundColor: colors.surfaceRaised,
+    color: colors.textPrimary,
+    fontFamily: 'GeneralSans-Medium',
+    fontSize: 17,
+    paddingHorizontal: spacing.lg,
+  },
   safety: {
     marginTop: spacing.xxl,
     backgroundColor: colors.surface,
@@ -91,4 +146,4 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   callRow: {},
-});
+}));

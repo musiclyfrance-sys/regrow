@@ -5,7 +5,7 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 import { AppText, FadeInWords, PrimaryButton, ScreenContainer } from '@/components';
 import { track } from '@/lib/analytics';
 import { useQuizStore } from '@/state/quizStore';
-import { colors, spacing } from '@/theme';
+import { colors, spacing, themedStyles } from '@/theme';
 
 /**
  * Écran Hook — la première seconde de l'app.
@@ -42,21 +42,19 @@ export default function HookScreen() {
       {showCta && (
         <Animated.View entering={FadeIn.duration(400)} style={styles.ctaBlock}>
           <PrimaryButton label="Commencer l'autopsie" onPress={onStart} fullWidth={false} />
-          <AppText
-            variant="caption"
-            color={colors.textSecondary}
-            center
-            style={styles.reassurance}
-          >
-            8 minutes. Anonyme. Sans compte.
-          </AppText>
+          <PrimaryButton
+            label="J'ai déjà un compte"
+            variant="ghost"
+            fullWidth={false}
+            onPress={() => router.push('/connect')}
+          />
         </Animated.View>
       )}
     </ScreenContainer>
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   phrase: { paddingHorizontal: spacing.md },
   ctaBlock: {
     position: 'absolute',
@@ -65,4 +63,4 @@ const styles = StyleSheet.create({
     gap: spacing.lg,
   },
   reassurance: { letterSpacing: 0.3 },
-});
+}));

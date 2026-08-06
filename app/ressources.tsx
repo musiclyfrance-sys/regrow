@@ -1,7 +1,7 @@
 import { Linking, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { AppText, PrimaryButton, ScreenContainer } from '@/components';
-import { colors, spacing } from '@/theme';
+import { colors, spacing, themedStyles } from '@/theme';
 
 /**
  * Écran ressources — affiché dès qu'un signal de détresse est détecté
@@ -31,8 +31,8 @@ export default function RessourcesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   content: { gap: spacing.lg, paddingHorizontal: spacing.md },
   body: {},
   actions: { position: 'absolute', bottom: spacing.huge, left: 24, right: 24, gap: spacing.md },
-});
+}));

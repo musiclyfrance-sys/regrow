@@ -1,75 +1,105 @@
 /**
  * Regrow — Design System (source unique de vérité).
  *
- * Mode sombre uniquement (seul mode du MVP : l'app s'utilise la nuit, au lit).
- * Toute couleur, espacement, rayon, durée et courbe de l'app vient d'ici.
- * Aucune valeur codée en dur ailleurs.
+ * Deux modes : NUIT (défaut, prune profonde) et JOUR (clair et vif), voir
+ * src/theme/palettes.ts. Toute couleur, espacement, rayon, durée et courbe de
+ * l'app vient d'ici. Aucune valeur codée en dur ailleurs.
+ *
+ * Comment ça marche :
+ * - `colors`, `tints`, `gradients` : lectures DYNAMIQUES (suivent le mode) —
+ *   à utiliser dans le rendu (props JSX).
+ * - `themedStyles(...)` : pour les StyleSheet de module — la feuille est
+ *   recalculée par mode, l'app se remonte à la bascule (racine, clé = mode).
  */
 
-// ─── Couleurs ────────────────────────────────────────────────────────────────
-export const colors = {
-  /** Prune presque noir — fond principal. */
-  background: '#131019',
-  /** Cartes et feuilles modales. */
-  surface: '#1D1827',
-  /** Éléments interactifs au repos. */
-  surfaceRaised: '#262033',
+import { Gradients, Palette, palettes, ThemeMode, ThemeTokens, Tints } from './palettes';
+import { currentMode } from './themeStore';
 
-  /** Lavande — actions principales et éléments de marque. */
-  primary: '#A78BFA',
-  /** Lavande claire — hover, secondaires, contours actifs. */
-  primarySoft: '#C4B5FD',
+function tokens(): ThemeTokens {
+  return palettes[currentMode()];
+}
 
-  /** Pêche — EXCLUSIVEMENT les moments de progression (streak, jauge, milestones). */
-  accentWarm: '#F4A98C',
+/**
+ * Crée un objet dont chaque propriété relit la palette du mode courant.
+ * Propriétés énumérables ET redéfinissables : l'objet se comporte comme un
+ * objet ordinaire, y compris à la copie (`{ ...colors }`).
+ */
+function dynamicTokens<T extends object>(pick: (t: ThemeTokens) => T): T {
+  const out = {} as T;
+  for (const key of Object.keys(pick(palettes.nuit)) as (keyof T)[]) {
+    Object.defineProperty(out, key, {
+      enumerable: true,
+      configurable: true,
+      get: () => pick(tokens())[key],
+    });
+  }
+  return out;
+}
 
-  /** Crème — texte principal. */
-  textPrimary: '#F5F1E8',
-  /** Mauve grisé — texte secondaire. */
-  textSecondary: '#A79FB3',
+// ─── Couleurs (dynamiques : suivent le mode nuit / jour) ─────────────────────
+export const colors: Palette = dynamicTokens((t) => t.colors);
 
-  /** Sauge — validations douces. */
-  success: '#9DC4A8',
-  /** Rouge désaturé — RÉSERVÉ au panic button et aux alertes. */
-  danger: '#E07A6B',
+/** Teintes translucides — fonds des pastilles et blocs. */
+export const tints: Tints = dynamicTokens((t) => t.tints);
 
-  /** Blanc translucide pour surlignage de citations dans le rapport. */
-  highlight: 'rgba(167, 139, 250, 0.18)',
+/** Dégradés. Ember : RÉSERVÉ à la cérémonie de crémation. */
+export const gradients: Gradients = dynamicTokens((t) => t.gradients);
 
-  /** Séparateurs discrets. */
-  border: 'rgba(245, 241, 232, 0.08)',
-  borderActive: '#A78BFA',
+export { palettes } from './palettes';
+export type { Palette, ThemeMode, ThemeTokens, Tints } from './palettes';
 
-  /** Surcouches / voiles. */
-  scrim: 'rgba(19, 16, 25, 0.72)',
-} as const;
+// ─── Feuilles de style par mode ──────────────────────────────────────────────
+/**
+ * Enrobe une feuille de style dépendante du thème. La fabrique reçoit les
+ * tokens du mode courant, le résultat est mis en cache par mode. L'objet
+ * retourné se lit exactement comme un StyleSheet classique (`styles.card`).
+ *
+ * Volontairement construit avec de vraies propriétés (et non un Proxy) :
+ * React Native et React Navigation parcourent les feuilles de style, et un
+ * Proxy lève une erreur dès que la feuille sous-jacente est figée. C'est ce
+ * qui faisait planter l'app sur téléphone alors que le web fonctionnait.
+ */
+export function themedStyles<T extends object>(factory: (t: ThemeTokens) => T): T {
+  const cache: Partial<Record<ThemeMode, T>> = {};
+  const resolve = (): T => {
+    const mode = currentMode();
+    if (!cache[mode]) cache[mode] = factory(palettes[mode]);
+    return cache[mode]!;
+  };
 
-/** Dégradé ember — RÉSERVÉ à la cérémonie de crémation. */
-export const gradients = {
-  ember: ['#F4A98C', '#E05E3F'] as const,
-  /** Voile de révélation partielle sur le teaser / paywall. */
-  reveal: ['rgba(19,16,25,0)', 'rgba(19,16,25,0.96)'] as const,
-} as const;
+  const out = {} as T;
+  for (const key of Object.keys(resolve()) as (keyof T)[]) {
+    Object.defineProperty(out, key, {
+      enumerable: true,
+      configurable: true,
+      get: () => resolve()[key],
+    });
+  }
+  return out;
+}
 
 // ─── Typographie ─────────────────────────────────────────────────────────────
 /**
- * Fraunces : titres et verdicts (côté éditorial / journal intime), graisses 500–600.
- * Inter : interface et corps, graisses 400–600.
+ * Doyle : réservée aux grands titres (display, title) et aux grands chiffres.
+ * General Sans : petits titres en Semibold, interface et corps en 400–500.
+ * Fichiers locaux dans assets/fonts (voir src/theme/useAppFonts.ts).
  */
 export const fonts = {
-  // Chargées via @expo-google-fonts (voir src/theme/useAppFonts.ts).
-  serifMedium: 'Fraunces_500Medium',
-  serifSemibold: 'Fraunces_600SemiBold',
-  sansRegular: 'Inter_400Regular',
-  sansMedium: 'Inter_500Medium',
-  sansSemibold: 'Inter_600SemiBold',
+  serifMedium: 'Doyle-Medium',
+  serifSemibold: 'Doyle-Bold',
+  sansRegular: 'GeneralSans-Regular',
+  sansMedium: 'GeneralSans-Medium',
+  sansSemibold: 'GeneralSans-Semibold',
 } as const;
 
-/** Échelle typographique : 32/26/20/17/15/13, interlignage généreux (≥1.4 sur les corps). */
+/**
+ * Échelle typographique : 32/26/18/17/15/13, interlignage généreux (≥1.4 sur
+ * les corps).
+ */
 export const type = {
   display: { fontFamily: fonts.serifSemibold, fontSize: 32, lineHeight: 40 },
   title: { fontFamily: fonts.serifSemibold, fontSize: 26, lineHeight: 34 },
-  heading: { fontFamily: fonts.serifMedium, fontSize: 20, lineHeight: 28 },
+  heading: { fontFamily: fonts.sansSemibold, fontSize: 18, lineHeight: 26 },
   bodyLarge: { fontFamily: fonts.sansRegular, fontSize: 17, lineHeight: 25 },
   body: { fontFamily: fonts.sansRegular, fontSize: 15, lineHeight: 23 },
   caption: { fontFamily: fonts.sansMedium, fontSize: 13, lineHeight: 19 },
@@ -129,11 +159,12 @@ export const motion = {
 // Bezier « douce » partagée (jamais de rebond).
 export const easingBezier = [0.22, 1, 0.36, 1] as const;
 
-export type ColorToken = keyof typeof colors;
+export type ColorToken = keyof Palette;
 export type SpacingToken = keyof typeof spacing;
 
 export const theme = {
   colors,
+  tints,
   gradients,
   fonts,
   type,

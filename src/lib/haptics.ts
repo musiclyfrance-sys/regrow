@@ -1,11 +1,11 @@
+import { Platform } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 /**
  * Retours haptiques centralisés. Chaque appel a une intention produit précise.
- * (Le respect de « Réduire les animations » ne concerne pas l'haptique iOS,
- * mais on garde un interrupteur global au cas où on l'exposerait en réglages.)
+ * Sans effet sur le web (pas de moteur haptique dans un navigateur).
  */
-let enabled = true;
+let enabled = Platform.OS !== 'web';
 
 export function setHapticsEnabled(value: boolean) {
   enabled = value;

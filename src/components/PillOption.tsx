@@ -8,7 +8,7 @@ import Animated, {
 import { AppText } from './AppText';
 import { haptics } from '@/lib/haptics';
 import { useReduceMotion } from '@/hooks/useReduceMotion';
-import { colors, radii, spacing } from '@/theme';
+import { colors, radii, spacing, themedStyles } from '@/theme';
 
 interface Props {
   label: string;
@@ -58,7 +58,7 @@ export function PillOption({ label, selected, onPress, multiple }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   pill: {
     minHeight: 56,
     borderRadius: radii.pill,
@@ -74,4 +74,4 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
   },
   label: { lineHeight: 22 },
-});
+}));

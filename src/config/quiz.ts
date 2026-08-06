@@ -60,6 +60,7 @@ export const QUIZ: QuizStep[] = [
   {
     kind: 'question',
     id: 'breakupChannel',
+    allowOther: true,
     step: 4,
     phase: 1,
     type: 'single',
@@ -129,6 +130,7 @@ export const QUIZ: QuizStep[] = [
   {
     kind: 'question',
     id: 'closureTalk',
+    allowOther: true,
     step: 9,
     phase: 1,
     type: 'single',
@@ -208,6 +210,7 @@ export const QUIZ: QuizStep[] = [
   {
     kind: 'question',
     id: 'exAfterFight',
+    allowOther: true,
     step: 14,
     phase: 2,
     type: 'single',
@@ -308,6 +311,7 @@ export const QUIZ: QuizStep[] = [
   {
     kind: 'question',
     id: 'whenYouKnew',
+    allowOther: true,
     step: 21,
     phase: 2,
     type: 'single',
@@ -322,6 +326,7 @@ export const QUIZ: QuizStep[] = [
   {
     kind: 'question',
     id: 'entourageOpinion',
+    allowOther: true,
     step: 22,
     phase: 2,
     type: 'single',
@@ -349,6 +354,7 @@ export const QUIZ: QuizStep[] = [
   {
     kind: 'question',
     id: 'relationshipFelt',
+    allowOther: true,
     step: 24,
     phase: 2,
     type: 'single',
@@ -388,7 +394,7 @@ export const QUIZ: QuizStep[] = [
       } else {
         style = 'un attachement plus ambivalent qu’il n’y paraît';
       }
-      return `Le style d'attachement de ${ex} penche vers ${style}. L'analyse complète le confirmera ou non — et surtout, elle te dira ce que ça a déclenché chez toi.`;
+      return `Le style d'attachement de ${ex} penche vers ${style}. L'analyse complète le confirmera ou non, et elle te dira ce que ça a déclenché chez toi.`;
     },
   },
 
@@ -396,6 +402,7 @@ export const QUIZ: QuizStep[] = [
   {
     kind: 'question',
     id: 'currentState',
+    allowOther: true,
     step: 25,
     phase: 3,
     type: 'single',
@@ -477,6 +484,7 @@ export const QUIZ: QuizStep[] = [
   {
     kind: 'question',
     id: 'confidant',
+    allowOther: true,
     step: 31,
     phase: 3,
     type: 'single',
@@ -530,6 +538,7 @@ export const QUIZ: QuizStep[] = [
   {
     kind: 'question',
     id: 'worstMoment',
+    allowOther: true,
     step: 34,
     phase: 3,
     type: 'single',
@@ -561,6 +570,7 @@ export const QUIZ: QuizStep[] = [
   {
     kind: 'question',
     id: 'keptPhotos',
+    allowOther: true,
     step: 36,
     phase: 3,
     type: 'single',
@@ -666,6 +676,7 @@ export const QUIZ: QuizStep[] = [
   {
     kind: 'question',
     id: 'betterMeans',
+    allowOther: true,
     step: 43,
     phase: 4,
     type: 'single',

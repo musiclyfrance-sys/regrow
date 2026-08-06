@@ -60,6 +60,8 @@ export interface QuestionStep {
   maxLength?: number;
   /** Rend la réponse facultative (avance possible sans sélection). */
   optional?: boolean;
+  /** Ajoute une pilule « Autre » si aucune réponse ne colle (choix unique). */
+  allowOther?: boolean;
   /** Stocke la réponse dans une variable de profil réutilisable. */
   capture?: ProfileVar;
 }

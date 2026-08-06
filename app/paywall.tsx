@@ -3,7 +3,7 @@ import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeIn, SlideInDown } from 'react-native-reanimated';
-import { AppText, PrimaryButton, ScreenContainer } from '@/components';
+import { AppText, HealingCurve, PrimaryButton, ScreenContainer } from '@/components';
 import { track } from '@/lib/analytics';
 import {
   configurePurchases,
@@ -13,8 +13,9 @@ import {
   purchase,
   restore,
 } from '@/lib/purchases';
-import { colors, motion, radii, spacing } from '@/theme';
+import { colors, motion, radii, spacing, themedStyles } from '@/theme';
 import { useAppStore } from '@/state/appStore';
+import { selectExName, useQuizStore } from '@/state/quizStore';
 
 /**
  * Paywall — hard paywall, point unique de l'app. Toutes les features verrouillées
@@ -23,6 +24,8 @@ import { useAppStore } from '@/state/appStore';
 export default function PaywallScreen() {
   const router = useRouter();
   const setEntitled = useAppStore((s) => s.setEntitled);
+  const profile = useQuizStore((s) => s.profile);
+  const ex = selectExName({ profile });
 
   const [offers, setOffers] = useState<Record<ProductId, Offer> | null>(null);
   const [selected, setSelected] = useState<ProductId>('program_90'); // présélection
@@ -114,7 +117,7 @@ export default function PaywallScreen() {
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <AppText variant="title">Ton autopsie est prête.</AppText>
         <AppText variant="body" color={colors.textSecondary} style={styles.subtitle}>
-          47 réponses. 6 sections. Le plan des 90 jours.
+          Et avec elle, le plan pour le sortir de ta tête. Jour après jour.
         </AppText>
 
         {/* Aperçu visuel — boucle ouverte. */}
@@ -126,6 +129,40 @@ export default function PaywallScreen() {
             colors={['rgba(29,24,39,0)', colors.surface]}
             style={StyleSheet.absoluteFill}
           />
+        </View>
+
+        {/* La promesse : la courbe qui descend. */}
+        <HealingCurve exName={ex} />
+        <AppText variant="body" color={colors.textSecondary} style={styles.promise}>
+          Ce n'est pas magique, c'est mécanique : chaque outil enlève un peu de
+          la place qu'il occupe. Le no-contact assèche l'habitude, le check-in
+          du soir désamorce les rechutes, le coffre met les souvenirs hors de
+          portée. En 90 jours, le manque devient un souvenir.
+        </AppText>
+
+        {/* Ce qui l'attend, jour après jour. */}
+        <View style={styles.journey}>
+          {[
+            { day: 'Ce soir', text: 'Tu lis ton rapport, tu comprends enfin, et rien que ça change la nuit.' },
+            { day: 'Jours 1–14', text: "Chaque soir, 2 minutes de check-in. Les envies de lui écrire s'espacent, ton compteur grimpe." },
+            { day: 'Jour 30', text: 'Tu réécoutes ta voix du premier jour, et tu mesures le chemin parcouru.' },
+            { day: 'Jour 90', text: 'Le coffre s\'ouvre. Tu choisis : récupérer, ou brûler. Toi, tu es déjà ailleurs.' },
+          ].map((step, i) => (
+            <View key={step.day} style={styles.journeyRow}>
+              <View style={styles.journeyDotCol}>
+                <View style={[styles.journeyDot, i === 0 && styles.journeyDotNow]} />
+                {i < 3 && <View style={styles.journeyLine} />}
+              </View>
+              <View style={styles.journeyContent}>
+                <AppText variant="caption" color={colors.accentWarm}>
+                  {step.day.toUpperCase()}
+                </AppText>
+                <AppText variant="body" color={colors.textPrimary}>
+                  {step.text}
+                </AppText>
+              </View>
+            </View>
+          ))}
         </View>
 
         {/* Offres */}
@@ -150,9 +187,9 @@ export default function PaywallScreen() {
         {/* Bénéfices */}
         <View style={styles.benefits}>
           {[
-            'Ton rapport complet et ton plan personnalisé',
-            'Le simulateur, le coffre et la streak no-contact',
-            "Tout ce qu'il faut pour tenir 90 jours",
+            'Ton rapport complet + le plan 90 jours taillé sur tes réponses',
+            'Le check-in du soir et un insight nouveau chaque jour',
+            'Le crash test de message, le coffre-fort et le compteur de jours',
           ].map((b) => (
             <View key={b} style={styles.benefitRow}>
               <View style={styles.benefitDot} />
@@ -259,7 +296,7 @@ function OfferCard({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = themedStyles(({ colors, tints, gradients }) => StyleSheet.create({
   closeWrap: { position: 'absolute', top: spacing.sm, left: spacing.xxl, zIndex: 10 },
   scroll: { paddingHorizontal: 24, paddingTop: spacing.huge, paddingBottom: spacing.lg, gap: spacing.lg },
   subtitle: {},
@@ -270,6 +307,20 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     height: 96,
   },
+  promise: { lineHeight: 24 },
+  journey: { gap: 0, marginVertical: spacing.sm },
+  journeyRow: { flexDirection: 'row', gap: spacing.lg },
+  journeyDotCol: { alignItems: 'center', width: 14 },
+  journeyDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: colors.surfaceRaised,
+    marginTop: 5,
+  },
+  journeyDotNow: { backgroundColor: colors.accentWarm },
+  journeyLine: { flex: 1, width: 2, backgroundColor: colors.border, marginVertical: 3 },
+  journeyContent: { flex: 1, gap: 2, paddingBottom: spacing.lg },
   offers: { gap: spacing.md },
   offerCard: {
     backgroundColor: colors.surface,
@@ -322,4 +373,4 @@ const styles = StyleSheet.create({
   sheetBody: {},
   introPrice: { alignItems: 'center', gap: spacing.xs },
   introRefuse: { alignItems: 'center', paddingTop: spacing.xs },
-});
+}));

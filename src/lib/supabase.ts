@@ -1,6 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { env, hasSupabase } from './env';
+import { secureSessionStorage } from './secureSessionStorage';
 
 /**
  * Client Supabase (auth anonyme, Postgres, storage chiffré — région UE).
@@ -15,7 +15,8 @@ import { env, hasSupabase } from './env';
 export const supabase: SupabaseClient | null = hasSupabase
   ? createClient(env.supabaseUrl, env.supabaseAnonKey, {
       auth: {
-        storage: AsyncStorage,
+        // Session chiffrée : clé dans le Keychain, données chiffrées à côté.
+        storage: secureSessionStorage,
         autoRefreshToken: true,
         persistSession: true,
         detectSessionInUrl: false,

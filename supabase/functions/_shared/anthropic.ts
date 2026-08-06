@@ -1,8 +1,9 @@
 // Client Anthropic partagé (Edge Functions Deno).
 // La clé ANTHROPIC_API_KEY est un SECRET Supabase, jamais exposé au client.
-// Modèle imposé : claude-sonnet-4-6.
+// Modèle configurable via le secret ANTHROPIC_MODEL, Haiku 4.5 par défaut
+// (rapide et économique pour démarrer, montée en gamme sans redéploiement).
 
-export const MODEL = 'claude-sonnet-4-6';
+export const MODEL = Deno.env.get('ANTHROPIC_MODEL') ?? 'claude-haiku-4-5';
 
 interface Message {
   role: 'user' | 'assistant';
